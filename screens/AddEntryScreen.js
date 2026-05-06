@@ -230,27 +230,24 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     marginBottom: 30,
-    gap: 10,
+    gap: 8,
   },
   mealTimeButton: {
-    backgroundColor: '#F2F2F7',
+    flex: screenWidth < 380 ? 1 : 0, // Stretch on small screens
+    minWidth: '45%',
     borderRadius: 12,
     paddingVertical: 12,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
+    alignItems: 'center',
   },
   mealTimeButtonActive: {
     backgroundColor: '#005A9C',
     borderColor: '#005A9C',
   },
   mealTimeText: {
-    color: '#003355',
     fontWeight: '600',
-  },
-  mealTimeTextActive: {
-    color: '#ffffff',
-    fontWeight: '700',
+    fontSize: screenWidth < 380 ? 12 : 14,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -265,9 +262,8 @@ const styles = StyleSheet.create({
   },
   mainInput: {
     flex: 1,
-    fontSize: 48,
+    fontSize: screenWidth < 380 ? 36 : 48,
     fontWeight: '800',
-    color: '#005A9C',
     height: '100%',
   },
   unitText: {

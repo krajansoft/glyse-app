@@ -18,6 +18,7 @@ export default function DashboardScreen({ navigation }) {
   const [targets, setTargets] = useState({ min: 70, max: 180 });
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState('Wszystkie');
+  const [containerWidth, setContainerWidth] = useState(screenWidth - 48); // Default fallback
   const { theme, isDark } = useTheme();
 
   const loadData = async () => {
@@ -123,29 +124,30 @@ export default function DashboardScreen({ navigation }) {
             </View>
         </View>
 
-        {data.length > 0 && (
-          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
-            <Text style={[styles.cardTitle, { color: theme.text }]}>Analiza Time in Range (TIR)</Text>
-            <PieChart
-              data={tirData}
-              width={screenWidth - 80}
-              height={180}
-              chartConfig={{ color: (opacity = 1) => theme.text }}
-              accessor={"population"}
-              backgroundColor={"transparent"}
-              paddingLeft={"15"}
-              center={[10, 0]}
-              absolute
-            />
-          </View>
-        )}
+        <View 
+          style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}
+          onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width - 40)}
+        >
+          <Text style={[styles.cardTitle, { color: theme.text }]}>Analiza Time in Range (TIR)</Text>
+          <PieChart
+            data={tirData}
+            width={containerWidth}
+            height={180}
+            chartConfig={{ color: (opacity = 1) => theme.text }}
+            accessor={"population"}
+            backgroundColor={"transparent"}
+            paddingLeft={"15"}
+            center={[10, 0]}
+            absolute
+          />
+        </View>
 
         <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
           <Text style={[styles.cardTitle, { color: theme.text }]}>Trend Glikemii</Text>
           {chartData ? (
             <LineChart
               data={chartData}
-              width={screenWidth - 80}
+              width={containerWidth}
               height={220}
               chartConfig={{
                 backgroundColor: theme.card,
@@ -154,10 +156,12 @@ export default function DashboardScreen({ navigation }) {
                 decimalPlaces: 0,
                 color: (opacity = 1) => theme.accent,
                 labelColor: (opacity = 1) => theme.textSecondary,
-                propsForDots: { r: "6", strokeWidth: "2", stroke: theme.accent }
+                propsForDots: { r: "5", strokeWidth: "2", stroke: theme.accent }
               }}
               bezier
               style={{ marginVertical: 8, borderRadius: 16 }}
+              withInnerLines={false}
+              withOuterLines={true}
             />
           ) : (
             <View style={styles.emptyChart}>
@@ -262,7 +266,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   statValueMain: {
-    fontSize: 48,
+    fontSize: screenWidth < 380 ? 36 : 48, // Scale font for small phones
     fontWeight: '800',
     marginVertical: 8,
   },

@@ -2,7 +2,7 @@ import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { StatusBar } from 'react-native';
+import { StatusBar, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
@@ -21,15 +21,15 @@ function AppContent() {
 
   if (!isAuthenticated) {
     return (
-        <>
+        <View style={{ flex: 1, backgroundColor: theme.background }}>
             <StatusBar barStyle={theme.statusBar} backgroundColor={theme.statusBg} />
             <LoginScreen onLogin={() => setIsAuthenticated(true)} />
-        </>
+        </View>
     );
   }
 
   return (
-      <>
+      <View style={{ flex: 1, backgroundColor: theme.background }}>
         <StatusBar barStyle={theme.statusBar} backgroundColor={theme.statusBg} />
         <NavigationContainer>
             <Tab.Navigator
@@ -96,7 +96,7 @@ function AppContent() {
             </Tab.Screen>
             </Tab.Navigator>
         </NavigationContainer>
-      </>
+      </View>
   );
 }
 

@@ -88,9 +88,11 @@ export const ThemeProvider = ({ children }) => {
         });
     };
 
+    const activeTheme = themes[currentTheme] || themes.light;
+
     return (
         <ThemeContext.Provider value={{ 
-            theme: themes[currentTheme], 
+            theme: activeTheme, 
             themeMode, 
             setThemeMode, 
             toggleTheme,
