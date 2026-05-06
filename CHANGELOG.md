@@ -1,5 +1,15 @@
 # Changelog - GLYSE App
 
+## [0.3.0] - 2026-05-06
+### Added
+- **Professional Clinical Reports**: Upgraded PDF generation engine with professional medical styling.
+- **Reporting Insights**: PDF reports now include "Contextual IQ" (Meal Content and Activity levels).
+- **Clinical Layout**: Added sections for Patient ID, Doctor's Notes, and enhanced data grid.
+
+### Changed
+- **Premium Branding in PDF**: Integrated the new premium logo into the clinical documents.
+- **Preview Modal**: Enhanced the reports preview screen to match the new clinical data structure.
+
 ## [0.2.0] - 2026-05-06
 ### Added
 - **Contextual IQ**: New optional section in `AddEntryScreen` to record meal content and activity levels.

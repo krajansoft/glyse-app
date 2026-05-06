@@ -215,11 +215,19 @@ export default function ReportsScreen() {
                                 </View>
                             </View>
 
-                            <Text style={[styles.previewLabel, {marginTop: 20}]}>LISTA POMIARÓW ({reportData.data.length}):</Text>
+                            <Text style={[styles.previewLabel, {marginTop: 20}]}>DZIENNIK POMIARÓW ({reportData.data.length}):</Text>
                             {reportData.data.slice(0, 10).map((item, idx) => (
                                 <View key={idx} style={styles.previewRow}>
-                                    <Text style={styles.previewRowDate}>{new Date(item.date).toLocaleDateString()}</Text>
-                                    <Text style={styles.previewRowSugar}>{item.sugarLevel} mg/dL</Text>
+                                    <View style={{ flex: 1 }}>
+                                        <Text style={styles.previewRowDate}>{new Date(item.date).toLocaleDateString()} {new Date(item.date).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</Text>
+                                        <Text style={styles.previewRowContext}>
+                                            {item.mealTime} {item.mealContent ? `• ${item.mealContent}` : ''}
+                                        </Text>
+                                    </View>
+                                    <View style={{ alignItems: 'flex-end', marginRight: 10 }}>
+                                        <Text style={styles.previewRowSugar}>{item.sugarLevel} mg/dL</Text>
+                                        {item.activityLevel && <Text style={styles.previewRowActivity}>{item.activityLevel}</Text>}
+                                    </View>
                                     <View style={[
                                         styles.previewStatusTag,
                                         item.sugarLevel < 70 ? {backgroundColor: '#fee2e2'} : 
@@ -345,6 +353,8 @@ const styles = StyleSheet.create({
     previewRow: { flexDirection: 'row', justifyContent: 'space-between', paddingVertical: 8, borderBottomWidth: 1, borderBottomColor: '#F2F2F7', alignItems: 'center' },
     previewRowDate: { fontSize: 12, color: '#444' },
     previewRowSugar: { fontSize: 14, fontWeight: '700', color: '#003355' },
+    previewRowContext: { fontSize: 10, color: '#666', marginTop: 2 },
+    previewRowActivity: { fontSize: 9, color: '#005A9C', fontWeight: '600' },
     previewStatusTag: { paddingHorizontal: 6, paddingVertical: 2, borderRadius: 4 },
     previewMoreText: { textAlign: 'center', marginTop: 15, fontSize: 11, color: '#999', fontStyle: 'italic' }
 });

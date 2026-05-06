@@ -20,81 +20,103 @@ export const generateClinicalReport = async (data, patientData, medicalStats) =>
         <style>
           @page { size: A4; margin: 10mm; }
           body { 
-            font-family: 'Helvetica', 'Arial', sans-serif; 
+            font-family: 'Segoe UI', 'Helvetica', 'Arial', sans-serif; 
             color: #1a1a1a; 
             margin: 0; padding: 20px;
             -webkit-print-color-adjust: exact;
           }
           .header { 
             display: flex; justify-content: space-between; align-items: center;
-            border-bottom: 4px solid #003355; padding-bottom: 15px; margin-bottom: 25px; 
+            border-bottom: 4px solid #003355; padding-bottom: 20px; margin-bottom: 30px; 
           }
-          .app-name { font-size: 32px; font-weight: 900; color: #003355; letter-spacing: -1px; }
+          .logo-area { display: flex; align-items: center; }
+          .app-name { font-size: 34px; font-weight: 900; color: #003355; letter-spacing: 2px; margin-left: 15px; }
           .report-meta { text-align: right; }
-          .report-title { font-size: 20px; font-weight: 800; color: #003355; margin-bottom: 2px; }
+          .report-title { font-size: 22px; font-weight: 800; color: #003355; margin-bottom: 2px; }
           
           .patient-card { 
-            background-color: #f4f7f9; border-radius: 10px; padding: 15px; margin-bottom: 30px;
-            border-left: 6px solid #005A9C;
+            background-color: #f8f9fb; border-radius: 12px; padding: 20px; margin-bottom: 35px;
+            border-left: 8px solid #005A9C; display: flex; justify-content: space-between; align-items: center;
           }
-          .patient-name { font-size: 24px; font-weight: 700; color: #003355; }
+          .patient-name { font-size: 26px; font-weight: 700; color: #003355; }
+          .patient-details { font-size: 14px; color: #555; margin-top: 5px; }
 
-          .dashboard { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 30px; }
+          .dashboard { display: flex; justify-content: space-between; gap: 15px; margin-bottom: 40px; }
           .stat-card { 
-            flex: 1; background: #fff; border: 1px solid #e1e8ed; border-radius: 8px; 
-            padding: 12px; text-align: center; 
+            flex: 1; background: #fff; border: 1px solid #e1e8ed; border-radius: 10px; 
+            padding: 15px; text-align: center; box-shadow: 0 2px 4px rgba(0,0,0,0.05);
           }
-          .stat-val { font-size: 22px; font-weight: 800; color: #005A9C; }
-          .stat-desc { font-size: 10px; color: #888; text-transform: uppercase; font-weight: 700; margin-top: 5px; }
+          .stat-val { font-size: 24px; font-weight: 800; color: #005A9C; }
+          .stat-desc { font-size: 10px; color: #666; text-transform: uppercase; font-weight: 700; margin-top: 8px; letter-spacing: 1px; }
 
-          table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+          .section-title { font-size: 14px; font-weight: 800; color: #003355; text-transform: uppercase; margin-bottom: 15px; border-left: 4px solid #34D399; padding-left: 10px; }
+
+          table { width: 100%; border-collapse: collapse; margin-top: 10px; border-radius: 8px; overflow: hidden; }
           th { 
-            background-color: #003355; color: #ffffff; font-size: 11px; 
-            text-transform: uppercase; padding: 10px; text-align: left;
+            background-color: #003355; color: #ffffff; font-size: 10px; 
+            text-transform: uppercase; padding: 12px; text-align: left; letter-spacing: 1px;
           }
-          td { padding: 10px; font-size: 13px; border-bottom: 1px solid #eee; }
+          td { padding: 12px; font-size: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
+          tr:nth-child(even) { background-color: #f9f9fb; }
           
-          .flag { padding: 3px 7px; border-radius: 4px; font-weight: 800; font-size: 10px; display: inline-block; }
-          .flag-hypo { background-color: #ffcccc; color: #cc0000; }
-          .flag-hyper { background-color: #ffe5cc; color: #cc6600; }
-          .flag-normal { background-color: #ccffcc; color: #006600; }
+          .flag { padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 9px; display: inline-block; }
+          .flag-hypo { background-color: #fee2e2; color: #b91c1c; }
+          .flag-hyper { background-color: #ffedd5; color: #9a3412; }
+          .flag-normal { background-color: #f0fdf4; color: #15803d; }
 
-          .footer { margin-top: 50px; font-size: 10px; color: #999; text-align: center; border-top: 1px solid #eee; padding-top: 15px; }
-          .signature { margin-top: 40px; display: flex; justify-content: flex-end; }
-          .sig-line { width: 200px; border-top: 1px solid #000; text-align: center; font-size: 11px; padding-top: 5px; }
+          .context-tag { font-size: 10px; color: #666; font-style: italic; display: block; margin-top: 4px; }
+          .activity-tag { font-size: 9px; font-weight: 700; color: #0369a1; background: #e0f2fe; padding: 2px 6px; border-radius: 4px; margin-left: 5px; }
+
+          .footer { margin-top: 60px; font-size: 11px; color: #777; text-align: center; border-top: 1px dotted #ccc; padding-top: 20px; }
+          .signature-area { margin-top: 50px; display: flex; justify-content: space-between; }
+          .doc-notes { flex: 1; border: 1px solid #e1e8ed; border-radius: 8px; padding: 15px; margin-right: 50px; min-height: 80px; }
+          .notes-label { font-size: 10px; font-weight: 800; color: #888; margin-bottom: 10px; text-transform: uppercase; }
+          .sig-line { width: 220px; border-top: 2px solid #003355; text-align: center; font-size: 12px; padding-top: 8px; font-weight: 700; align-self: flex-end; }
         </style>
       </head>
       <body>
         <div class="header">
-          <div style="display: flex; align-items: center;">
-            <svg width="40" height="40" viewBox="0 0 24 24" style="margin-right: 12px;">
+          <div class="logo-area">
+            <svg width="50" height="50" viewBox="0 0 100 100">
                 <defs>
-                    <linearGradient id="logoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                        <stop offset="0%" style="stop-color:#003355;stop-opacity:1" />
-                        <stop offset="100%" style="stop-color:#005A9C;stop-opacity:1" />
+                    <linearGradient id="prem_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0" stop-color="#003355" />
+                        <stop offset="0.5" stop-color="#005A9C" />
+                        <stop offset="1" stop-color="#0077CC" />
+                    </linearGradient>
+                    <linearGradient id="glow_grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0" stop-color="#34D399" />
+                        <stop offset="1" stop-color="#10B981" />
                     </linearGradient>
                 </defs>
-                <path d="M12,2C6.48,2 2,6.48 2,12s4.48,10 10,10c5.52,0 10,-4.48 10,-10S17.52,2 12,2zM12,18c-3.31,0 -6,-2.69 -6,-6s2.69,-6 6,-6 6,2.69 6,6 -2.69,6 -6,6z" fill="url(#logoGrad)"/>
-                <circle cx="12" cy="12" r="1.5" fill="#34D399"/>
+                <path d="M50,5 C25.1,5 5,25.1 5,50 C5,74.9 25.1,95 50,95 C74.9,95 95,74.9 95,50 C95,25.1 74.9,5 50,5 Z M50,85 C30.7,85 15,69.3 15,50 C15,30.7 30.7,15 50,15 C69.3,15 85,30.7 85,50 C85,69.3 69.3,85 50,85 Z" fill="url(#prem_grad)" />
+                <path d="M50,30 C39,30 30,39 30,50 C30,61 39,70 50,70 C61,70 70,61 70,50 C70,39 61,30 50,30 Z M50,62 C43.4,62 38,56.6 38,50 C38,43.4 43.4,38 50,38 C56.6,38 62,43.4 62,50 C62,56.6 56.6,62 50,62 Z" fill="url(#premium_grad)" opacity="0.8" />
+                <circle cx="50" cy="50" r="6" fill="url(#glow_grad)" />
             </svg>
             <div class="app-name">GLYSE</div>
           </div>
           <div class="report-meta">
             <div class="report-title">RAPORT KLINICZNY</div>
-            <div style="font-size: 12px; color: #666;">${dateStr}</div>
+            <div style="font-size: 13px; color: #555;">Wygenerowano: ${dateStr}</div>
           </div>
         </div>
 
         <div class="patient-card">
-          <div style="font-size: 10px; color: #005A9C; font-weight: 800; text-transform: uppercase;">Pacjent</div>
-          <div class="patient-name">${patientName}</div>
-          <div style="font-size: 13px; color: #666;">${birthYear}</div>
+          <div>
+            <div style="font-size: 10px; color: #005A9C; font-weight: 800; text-transform: uppercase; margin-bottom: 5px;">Pacjent</div>
+            <div class="patient-name">${patientName}</div>
+            <div class="patient-details">${birthYear}</div>
+          </div>
+          <div style="text-align: right; font-size: 12px; color: #666;">
+            ID Pacjenta: GLYSE-${Math.random().toString(36).substr(2, 6).toUpperCase()}
+          </div>
         </div>
 
+        <div class="section-title">Wskaźniki Glikemiczne</div>
         <div class="dashboard">
           <div class="stat-card">
             <div class="stat-val">${medicalStats.hba1c}%</div>
-            <div class="stat-desc">Szac. HbA1c</div>
+            <div class="stat-desc">HbA1c (est.)</div>
           </div>
           <div class="stat-card">
             <div class="stat-val">${medicalStats.tir}%</div>
@@ -102,21 +124,23 @@ export const generateClinicalReport = async (data, patientData, medicalStats) =>
           </div>
           <div class="stat-card">
             <div class="stat-val">${medicalStats.tbr}%</div>
-            <div class="stat-desc">Hipoglikemia</div>
+            <div class="stat-desc">Poniżej normy</div>
           </div>
           <div class="stat-card">
             <div class="stat-val">${medicalStats.tar}%</div>
-            <div class="stat-desc">Hiperglikemia</div>
+            <div class="stat-desc">Powyżej normy</div>
           </div>
         </div>
 
+        <div class="section-title">Szczegółowy Dziennik Pomiarów</div>
         <table>
           <thead>
             <tr>
-              <th>Data i Godzina</th>
-              <th>Okoliczności</th>
-              <th>Wynik (mg/dL)</th>
-              <th>Status Kliniczny</th>
+              <th style="width: 20%;">Data i Godzina</th>
+              <th style="width: 15%;">Okoliczności</th>
+              <th style="width: 30%;">Contextual IQ (Posiłek/Aktywność)</th>
+              <th style="width: 15%;">Wynik</th>
+              <th style="width: 20%;">Status</th>
             </tr>
           </thead>
           <tbody>
@@ -124,13 +148,26 @@ export const generateClinicalReport = async (data, patientData, medicalStats) =>
               const d = new Date(item.date);
               const dStr = d.toLocaleDateString('pl-PL') + ' ' + d.toLocaleTimeString('pl-PL', {hour:'2-digit', minute:'2-digit'});
               let f = 'flag-normal', s = 'W NORMIE';
-              if(item.sugarLevel < 70) { f='flag-hypo'; s='NIEDOCUKRZENIE'; }
-              else if(item.sugarLevel > 180) { f='flag-hyper'; s='HIPERGLIKEMIA'; }
+              if(item.sugarLevel < 70) { f='flag-hypo'; s='HIPO'; }
+              else if(item.sugarLevel > 180) { f='flag-hyper'; s='HIPER'; }
+              
+              const contextInfo = item.mealContent ? `<span class="context-tag">${item.mealContent}</span>` : '';
+              const activityTag = item.activityLevel ? `<span class="activity-tag">${item.activityLevel}</span>` : '';
+              const notesInfo = item.notes ? `<div style="font-size: 9px; color: #888; margin-top: 4px;">Notatki: ${item.notes}</div>` : '';
+
               return `
                 <tr>
                   <td>${dStr}</td>
-                  <td>${item.mealTime || '-'}</td>
-                  <td style="font-weight: bold;">${item.sugarLevel}</td>
+                  <td><span style="font-weight: 700; color: #003355;">${item.mealTime || '-'}</span></td>
+                  <td>
+                    <div style="display: flex; flex-direction: column;">
+                      <div style="display: flex; align-items: center;">
+                        ${item.mealContent ? '🍴' : ''} ${contextInfo} ${activityTag}
+                      </div>
+                      ${notesInfo}
+                    </div>
+                  </td>
+                  <td style="font-weight: 800; font-size: 16px; color: #005A9C;">${item.sugarLevel} <span style="font-size: 9px; font-weight: 400; color: #666;">mg/dL</span></td>
                   <td><span class="flag ${f}">${s}</span></td>
                 </tr>
               `;
@@ -138,12 +175,15 @@ export const generateClinicalReport = async (data, patientData, medicalStats) =>
           </tbody>
         </table>
 
-        <div class="signature">
-          <div class="sig-line">Pieczątka i podpis lekarza</div>
+        <div class="signature-area">
+          <div class="doc-notes">
+            <div class="notes-label">Uwagi i Zalecenia Lekarskie</div>
+          </div>
+          <div class="sig-line">Pieczątka i Podpis Lekarza</div>
         </div>
 
         <div class="footer">
-          Raport wygenerowany przez GLYSE. Dane mają charakter poglądowy.
+          Niniejszy raport został wygenerowany automatycznie przez system GLYSE. Dane służą celom informacyjnym i powinny być interpretowane przez wykwalifikowany personel medyczny.
         </div>
       </body>
     </html>
