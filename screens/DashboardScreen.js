@@ -7,6 +7,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { getData, getTargets } from '../utils/storage';
 import { calculateMedicalStats } from '../utils/medicalCalculations';
 import GlyseLogo from '../components/GlyseLogo';
+import { useTheme } from '../context/ThemeContext';
 
 const screenWidth = Dimensions.get('window').width;
 
@@ -17,6 +18,7 @@ export default function DashboardScreen({ navigation }) {
   const [targets, setTargets] = useState({ min: 70, max: 180 });
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState('Wszystkie');
+  const { theme, toggleTheme, themeMode, isDark } = useTheme();
 
   const loadData = async () => {
     const stored = await getData();
@@ -68,24 +70,38 @@ export default function DashboardScreen({ navigation }) {
   const calculateTIRData = () => {
     if (data.length === 0) return [];
     return [
-      { name: 'W normie', population: medicalStats.tir, color: '#34D399', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-      { name: 'Wysokie', population: medicalStats.tar, color: '#FFB347', legendFontColor: '#7F7F7F', legendFontSize: 12 },
-      { name: 'Niskie', population: medicalStats.tbr, color: '#FF3B30', legendFontColor: '#7F7F7F', legendFontSize: 12 },
+      { name: 'W normie', population: medicalStats.tir, color: '#34D399', legendFontColor: theme.textSecondary, legendFontSize: 12 },
+      { name: 'Wysokie', population: medicalStats.tar, color: '#FFB347', legendFontColor: theme.textSecondary, legendFontSize: 12 },
+      { name: 'Niskie', population: medicalStats.tbr, color: '#FF3B30', legendFontColor: theme.textSecondary, legendFontSize: 12 },
     ];
   };
 
   const tirData = calculateTIRData();
 
+  const getThemeIcon = () => {
+    if (themeMode === 'light') return 'sunny';
+    if (themeMode === 'dark') return 'moon';
+    return 'time-outline';
+  };
+
   return (
-    <View style={styles.outerContainer}>
+    <View style={[styles.outerContainer, { backgroundColor: theme.background }]}>
       <ScrollView 
           style={styles.container}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent} />}
       >
         <View style={styles.header}>
-          <GlyseLogo size={50} />
-          <Text style={styles.title}>Panel Wyników</Text>
-          <Text style={styles.subtitle}>Twoje aktualne statystyki kliniczne</Text>
+          <View style={styles.headerTop}>
+            <GlyseLogo size={50} />
+            <TouchableOpacity style={[styles.themeToggle, { backgroundColor: isDark ? '#334155' : '#F2F2F7' }]} onPress={toggleTheme}>
+                <Ionicons name={getThemeIcon()} size={20} color={theme.accent} />
+                <Text style={[styles.themeToggleText, { color: theme.text }]}>
+                    {themeMode === 'auto' ? 'Auto' : themeMode === 'light' ? 'Jasny' : 'Ciemny'}
+                </Text>
+            </TouchableOpacity>
+          </View>
+          <Text style={[styles.title, { color: theme.text }]}>Panel Wyników</Text>
+          <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Twoje aktualne statystyki kliniczne</Text>
         </View>
 
         <View style={styles.filterContainer}>
@@ -93,31 +109,39 @@ export default function DashboardScreen({ navigation }) {
             {FILTERS.map(filter => (
               <TouchableOpacity 
                 key={filter} 
-                style={[styles.filterChip, activeFilter === filter && styles.filterChipActive]}
+                style={[
+                    styles.filterChip, 
+                    { backgroundColor: theme.card, borderColor: theme.border },
+                    activeFilter === filter && { backgroundColor: theme.accent, borderColor: theme.accent }
+                ]}
                 onPress={() => handleFilterPress(filter)}
               >
-                <Text style={[styles.filterText, activeFilter === filter && styles.filterTextActive]}>{filter}</Text>
+                <Text style={[
+                    styles.filterText, 
+                    { color: theme.text },
+                    activeFilter === filter && { color: '#FFFFFF' }
+                ]}>{filter}</Text>
               </TouchableOpacity>
             ))}
           </ScrollView>
         </View>
 
         <View style={styles.statsContainer}>
-            <View style={styles.statBoxMain}>
-                <Text style={styles.statLabelMain}>Szacowane HbA1c</Text>
-                <Text style={styles.statValueMain}>{medicalStats.hba1c}%</Text>
+            <View style={[styles.statBoxMain, { backgroundColor: isDark ? theme.card : '#003355', borderWidth: isDark ? 1 : 0, borderColor: theme.border }]}>
+                <Text style={[styles.statLabelMain, { color: isDark ? theme.textSecondary : '#A0B3C6' }]}>Szacowane HbA1c</Text>
+                <Text style={[styles.statValueMain, { color: isDark ? theme.accent : '#FFFFFF' }]}>{medicalStats.hba1c}%</Text>
                 <Text style={styles.statSubValue}>Średni cukier: {medicalStats.average} mg/dL</Text>
             </View>
         </View>
 
         {data.length > 0 && (
-          <View style={styles.card}>
-            <Text style={styles.cardTitle}>Analiza Time in Range (TIR)</Text>
+          <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+            <Text style={[styles.cardTitle, { color: theme.text }]}>Analiza Time in Range (TIR)</Text>
             <PieChart
               data={tirData}
               width={screenWidth - 80}
               height={180}
-              chartConfig={{ color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})` }}
+              chartConfig={{ color: (opacity = 1) => theme.text }}
               accessor={"population"}
               backgroundColor={"transparent"}
               paddingLeft={"15"}
@@ -127,29 +151,29 @@ export default function DashboardScreen({ navigation }) {
           </View>
         )}
 
-        <View style={styles.card}>
-          <Text style={styles.cardTitle}>Trend Glikemii</Text>
+        <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <Text style={[styles.cardTitle, { color: theme.text }]}>Trend Glikemii</Text>
           {chartData ? (
             <LineChart
               data={chartData}
               width={screenWidth - 80}
               height={220}
               chartConfig={{
-                backgroundColor: "#ffffff",
-                backgroundGradientFrom: "#ffffff",
-                backgroundGradientTo: "#ffffff",
+                backgroundColor: theme.card,
+                backgroundGradientFrom: theme.card,
+                backgroundGradientTo: theme.card,
                 decimalPlaces: 0,
-                color: (opacity = 1) => `rgba(0, 90, 156, ${opacity})`,
-                labelColor: (opacity = 1) => `rgba(0, 51, 85, ${opacity})`,
-                propsForDots: { r: "6", strokeWidth: "2", stroke: "#005A9C" }
+                color: (opacity = 1) => theme.accent,
+                labelColor: (opacity = 1) => theme.textSecondary,
+                propsForDots: { r: "6", strokeWidth: "2", stroke: theme.accent }
               }}
               bezier
               style={{ marginVertical: 8, borderRadius: 16 }}
             />
           ) : (
             <View style={styles.emptyChart}>
-              <Ionicons name="stats-chart" size={48} color="#003355" style={{ marginBottom: 12 }} />
-              <Text style={styles.emptyText}>Brak danych do wyświetlenia trendu.</Text>
+              <Ionicons name="stats-chart" size={48} color={theme.accent} style={{ marginBottom: 12 }} />
+              <Text style={[styles.emptyText, { color: theme.textSecondary }]}>Brak danych do wyświetlenia trendu.</Text>
             </View>
           )}
         </View>
@@ -158,7 +182,7 @@ export default function DashboardScreen({ navigation }) {
       </ScrollView>
 
       <TouchableOpacity 
-        style={styles.fab} 
+        style={[styles.fab, { backgroundColor: theme.accent, shadowColor: theme.accent }]} 
         onPress={() => navigation.navigate('Add')}
       >
         <Ionicons name="add" size={32} color="#fff" />
@@ -170,7 +194,6 @@ export default function DashboardScreen({ navigation }) {
 const styles = StyleSheet.create({
   outerContainer: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
   },
   container: {
     flex: 1,
@@ -181,16 +204,34 @@ const styles = StyleSheet.create({
     paddingBottom: 30,
     alignItems: 'center',
   },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    width: '100%',
+    marginBottom: 20,
+  },
+  themeToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  themeToggleText: {
+    fontSize: 12,
+    fontWeight: '700',
+    marginLeft: 8,
+    textTransform: 'uppercase',
+  },
   title: {
     fontSize: 26,
     fontWeight: '700',
-    color: '#003355',
-    marginTop: 15,
+    marginTop: 5,
     opacity: 0.9,
   },
   subtitle: {
     fontSize: 13,
-    color: '#666',
     textAlign: 'center',
     marginTop: 4,
     opacity: 0.8,
@@ -203,48 +244,35 @@ const styles = StyleSheet.create({
     gap: 10,
   },
   filterChip: {
-    backgroundColor: '#FFFFFF',
     paddingHorizontal: 16,
     paddingVertical: 10,
     borderRadius: 20,
     borderWidth: 1,
-    borderColor: '#E5E5EA',
-  },
-  filterChipActive: {
-    backgroundColor: '#005A9C',
-    borderColor: '#005A9C',
   },
   filterText: {
-    color: '#003355',
     fontWeight: '600',
-  },
-  filterTextActive: {
-    color: '#FFFFFF',
   },
   statsContainer: {
     paddingHorizontal: 24,
     marginBottom: 24,
   },
   statBoxMain: {
-    backgroundColor: '#003355',
     borderRadius: 24,
     padding: 24,
     alignItems: 'center',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 20,
     elevation: 10,
   },
   statLabelMain: {
-    color: '#A0B3C6',
     fontSize: 12,
     fontWeight: '700',
     textTransform: 'uppercase',
     letterSpacing: 1,
   },
   statValueMain: {
-    color: '#FFFFFF',
     fontSize: 48,
     fontWeight: '800',
     marginVertical: 8,
@@ -255,13 +283,11 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   card: {
-    backgroundColor: '#FFFFFF',
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 20,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#F2F2F7',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.05,
@@ -271,7 +297,6 @@ const styles = StyleSheet.create({
   cardTitle: {
     fontSize: 16,
     fontWeight: '700',
-    color: '#003355',
     marginBottom: 16,
   },
   emptyChart: {
@@ -280,7 +305,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   emptyText: {
-    color: '#666',
     fontSize: 14,
   },
   fab: {
@@ -290,10 +314,8 @@ const styles = StyleSheet.create({
     width: 64,
     height: 64,
     borderRadius: 32,
-    backgroundColor: '#005A9C',
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: '#005A9C',
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.3,
     shadowRadius: 12,

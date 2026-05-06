@@ -9,6 +9,7 @@ import { getData, getPatientData } from '../utils/storage';
 import { calculateMedicalStats } from '../utils/medicalCalculations';
 import { generateClinicalReport } from '../utils/pdfGenerator';
 import GlyseLogo from '../components/GlyseLogo';
+import { useTheme } from '../context/ThemeContext';
 
 const REPORT_PERIODS = [
     { label: 'Ostatnie 7 dni', days: 7 },
@@ -23,6 +24,7 @@ export default function ReportsScreen() {
     const [isGenerating, setIsGenerating] = useState(false);
     const [isPreviewVisible, setIsPreviewVisible] = useState(false);
     const [reportData, setReportData] = useState({ data: [], stats: {}, patient: {} });
+    const { theme, isDark } = useTheme();
 
     const checkData = async () => {
         const data = await getData();
@@ -114,24 +116,32 @@ export default function ReportsScreen() {
     };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             <ScrollView contentContainerStyle={styles.scrollContent}>
                 <View style={styles.header}>
                     <GlyseLogo size={50} />
-                    <Text style={styles.title}>Centrum Raportów</Text>
-                    <Text style={styles.subtitle}>Profesjonalna dokumentacja kliniczna</Text>
+                    <Text style={[styles.title, { color: theme.text }]}>Centrum Raportów</Text>
+                    <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Profesjonalna dokumentacja kliniczna</Text>
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>1. Wybierz zakres danych</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>1. Wybierz zakres danych</Text>
                     <View style={styles.periodsContainer}>
                         {REPORT_PERIODS.map(period => (
                             <TouchableOpacity 
                                 key={period.days} 
-                                style={[styles.periodButton, selectedPeriod.days === period.days && styles.periodButtonActive]}
+                                style={[
+                                    styles.periodButton, 
+                                    { backgroundColor: theme.card, borderColor: theme.border },
+                                    selectedPeriod.days === period.days && { backgroundColor: theme.accent, borderColor: theme.accent }
+                                ]}
                                 onPress={() => setSelectedPeriod(period)}
                             >
-                                <Text style={[styles.periodText, selectedPeriod.days === period.days && styles.periodTextActive]}>
+                                <Text style={[
+                                    styles.periodText, 
+                                    { color: theme.text },
+                                    selectedPeriod.days === period.days && { color: '#FFFFFF' }
+                                ]}>
                                     {period.label}
                                 </Text>
                             </TouchableOpacity>
@@ -140,10 +150,10 @@ export default function ReportsScreen() {
                 </View>
 
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>2. Generuj raport</Text>
+                    <Text style={[styles.sectionTitle, { color: theme.text }]}>2. Generuj raport</Text>
                     
                     <TouchableOpacity 
-                        style={[styles.pdfButton, isGenerating && { opacity: 0.7 }]} 
+                        style={[styles.pdfButton, { backgroundColor: theme.accent, shadowColor: theme.accent }, isGenerating && { opacity: 0.7 }]} 
                         onPress={handlePreparePreview}
                         disabled={isGenerating}
                     >
@@ -160,9 +170,9 @@ export default function ReportsScreen() {
                         </View>
                     </TouchableOpacity>
 
-                    <TouchableOpacity style={styles.csvButton} onPress={handleExportCSV}>
-                        <Ionicons name="grid-outline" size={20} color="#005A9C" />
-                        <Text style={styles.csvButtonText}>Eksportuj do CSV (Arkusz)</Text>
+                    <TouchableOpacity style={[styles.csvButton, { borderColor: theme.accent }]} onPress={handleExportCSV}>
+                        <Ionicons name="grid-outline" size={20} color={theme.accent} />
+                        <Text style={[styles.csvButtonText, { color: theme.accent }]}>Eksportuj do CSV (Arkusz)</Text>
                     </TouchableOpacity>
                 </View>
             </ScrollView>
@@ -174,12 +184,12 @@ export default function ReportsScreen() {
                 visible={isPreviewVisible}
                 onRequestClose={() => setIsPreviewVisible(false)}
             >
-                <View style={styles.modalContainer}>
-                    <View style={styles.modalHeader}>
+                <View style={[styles.modalContainer, { backgroundColor: isDark ? theme.background : '#F2F2F7' }]}>
+                    <View style={[styles.modalHeader, { backgroundColor: theme.card, borderBottomWidth: 1, borderBottomColor: theme.border }]}>
                         <TouchableOpacity onPress={() => setIsPreviewVisible(false)}>
-                            <Ionicons name="close" size={28} color="#003355" />
+                            <Ionicons name="close" size={28} color={theme.text} />
                         </TouchableOpacity>
-                        <Text style={styles.modalTitle}>Podgląd Raportu</Text>
+                        <Text style={[styles.modalTitle, { color: theme.text }]}>Podgląd Raportu</Text>
                         <TouchableOpacity onPress={handleFinalPrint} style={styles.modalPrintBtn}>
                             <Ionicons name="print" size={20} color="#FFFFFF" />
                             <Text style={styles.modalPrintText}>DRUKUJ</Text>

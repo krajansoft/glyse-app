@@ -6,13 +6,14 @@ import * as Sharing from 'expo-sharing';
 import * as DocumentPicker from 'expo-document-picker';
 import * as Haptics from 'expo-haptics';
 import { getData, replaceData, savePatientData, getPatientData, getTargets, saveTargets, getPinHint, savePinHint, savePin } from '../utils/storage';
-import GlyseLogo from '../components/GlyseLogo';
+import { useTheme } from '../context/ThemeContext';
 
 export default function SettingsScreen({ onLogout }) {
   const [isLoading, setIsLoading] = useState(false);
   const [patientData, setPatientData] = useState({ firstName: '', lastName: '', birthYear: '' });
   const [targets, setTargets] = useState({ min: '70', max: '180' });
   const [pinHint, setPinHint] = useState('');
+  const { theme, isDark } = useTheme();
 
   React.useEffect(() => {
     const loadSettings = async () => {
@@ -135,64 +136,67 @@ export default function SettingsScreen({ onLogout }) {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
         <GlyseLogo size={50} />
-        <Text style={styles.title}>Konfiguracja</Text>
-        <Text style={styles.subtitle}>Zarządzaj swoim profilem klinicznym</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Konfiguracja</Text>
+        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Zarządzaj swoim profilem klinicznym</Text>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Profil Pacjenta</Text>
+      <View style={[styles.section, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Profil Pacjenta</Text>
         <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Imię</Text>
+            <Text style={[styles.inputLabel, { color: theme.text }]}>Imię</Text>
             <TextInput 
-                style={styles.textInput}
+                style={[styles.textInput, { backgroundColor: theme.background, color: theme.text }]}
                 value={patientData.firstName}
                 onChangeText={(text) => setPatientData({...patientData, firstName: text})}
                 placeholder="np. Jan"
+                placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
             />
         </View>
         <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Nazwisko</Text>
+            <Text style={[styles.inputLabel, { color: theme.text }]}>Nazwisko</Text>
             <TextInput 
-                style={styles.textInput}
+                style={[styles.textInput, { backgroundColor: theme.background, color: theme.text }]}
                 value={patientData.lastName}
                 onChangeText={(text) => setPatientData({...patientData, lastName: text})}
                 placeholder="np. Kowalski"
+                placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
             />
         </View>
         <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Rok urodzenia</Text>
+            <Text style={[styles.inputLabel, { color: theme.text }]}>Rok urodzenia</Text>
             <TextInput 
-                style={styles.textInput}
+                style={[styles.textInput, { backgroundColor: theme.background, color: theme.text }]}
                 value={patientData.birthYear}
                 onChangeText={(text) => setPatientData({...patientData, birthYear: text})}
                 placeholder="np. 1980"
+                placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
                 keyboardType="numeric"
             />
         </View>
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Cele Terapeutyczne</Text>
-        <Text style={styles.sectionDescription}>
+      <View style={[styles.section, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Cele Terapeutyczne</Text>
+        <Text style={[styles.sectionDescription, { color: theme.textSecondary }]}>
           Ustaw zakres docelowy glikemii (Time in Range), który ustaliłeś ze swoim lekarzem.
         </Text>
         <View style={styles.row}>
             <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
-                <Text style={styles.inputLabel}>Min (mg/dL)</Text>
+                <Text style={[styles.inputLabel, { color: theme.text }]}>Min (mg/dL)</Text>
                 <TextInput 
-                    style={styles.textInput}
+                    style={[styles.textInput, { backgroundColor: theme.background, color: theme.text }]}
                     value={targets.min}
                     onChangeText={(text) => setTargets({...targets, min: text})}
                     keyboardType="numeric"
                 />
             </View>
             <View style={[styles.inputGroup, { flex: 1 }]}>
-                <Text style={styles.inputLabel}>Max (mg/dL)</Text>
+                <Text style={[styles.inputLabel, { color: theme.text }]}>Max (mg/dL)</Text>
                 <TextInput 
-                    style={styles.textInput}
+                    style={[styles.textInput, { backgroundColor: theme.background, color: theme.text }]}
                     value={targets.max}
                     onChangeText={(text) => setTargets({...targets, max: text})}
                     keyboardType="numeric"
@@ -200,18 +204,18 @@ export default function SettingsScreen({ onLogout }) {
             </View>
         </View>
 
-        <TouchableOpacity style={styles.saveButton} onPress={handleSaveConfig}>
+        <TouchableOpacity style={[styles.saveButton, { backgroundColor: theme.accent }]} onPress={handleSaveConfig}>
             <Text style={styles.saveButtonText}>Zapisz Konfigurację</Text>
         </TouchableOpacity>
       </View>
       
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Bezpieczeństwo Danych</Text>
-        <Text style={styles.sectionDescription}>
+      <View style={[styles.section, { backgroundColor: theme.card, borderColor: theme.border }]}>
+        <Text style={[styles.sectionTitle, { color: theme.text }]}>Bezpieczeństwo Danych</Text>
+        <Text style={[styles.sectionDescription, { color: theme.textSecondary }]}>
           Eksportuj i importuj dane w formacie JSON.
         </Text>
 
-        <TouchableOpacity style={styles.actionButton} onPress={handleExportBackup} disabled={isLoading}>
+        <TouchableOpacity style={[styles.actionButton, { backgroundColor: isDark ? '#334155' : '#003355' }]} onPress={handleExportBackup} disabled={isLoading}>
           <Ionicons name="cloud-download-outline" size={24} color="#fff" />
           <Text style={styles.buttonText}>Utwórz kopię (Eksport)</Text>
         </TouchableOpacity>
@@ -222,16 +226,17 @@ export default function SettingsScreen({ onLogout }) {
         </TouchableOpacity>
       </View>
 
-      <View style={[styles.section, styles.dangerSection]}>
+      <View style={[styles.section, isDark ? { backgroundColor: theme.card, borderColor: '#7F1D1D' } : styles.dangerSection]}>
         <Text style={[styles.sectionTitle, { color: '#FF3B30' }]}>Zabezpieczenia</Text>
         
         <View style={styles.inputGroup}>
-            <Text style={styles.inputLabel}>Podpowiedź do kodu PIN</Text>
+            <Text style={[styles.inputLabel, { color: theme.text }]}>Podpowiedź do kodu PIN</Text>
             <TextInput 
-                style={styles.textInput}
+                style={[styles.textInput, { backgroundColor: theme.background, color: theme.text }]}
                 value={pinHint}
                 onChangeText={setPinHint}
                 placeholder="np. rok urodzenia psa"
+                placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
             />
         </View>
 

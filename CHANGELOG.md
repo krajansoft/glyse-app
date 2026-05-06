@@ -1,5 +1,16 @@
 # Changelog - GLYSE App
 
+## [0.4.0] - 2026-05-06
+### Added
+- **Dynamic Theme Engine**: Global theme system with support for Light, Dark, and Auto modes.
+- **Auto-Night Mode**: Automated theme switching (Dark after 22:00, Light after 06:00) to improve night-time usability.
+- **Theme Override**: Manual toggle button in the Dashboard header for quick theme switching.
+- **Theme Persistence**: Automatic saving and restoring of user theme preferences.
+
+### Changed
+- **Themed Screens**: All application screens (Add Entry, History, Reports, Settings, Login) updated with responsive theme variables.
+- **Dark Mode Aesthetics**: Premium dark palette using deep navy and slate for clinical precision.
+
 ## [0.3.0] - 2026-05-06
 ### Added
 - **Professional Clinical Reports**: Upgraded PDF generation engine with professional medical styling.

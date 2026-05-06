@@ -7,6 +7,8 @@ import { getPin, savePin, getPinHint, savePinHint } from '../utils/storage';
 
 const { width, height } = Dimensions.get('window');
 
+import { useTheme } from '../context/ThemeContext';
+
 export default function LoginScreen({ onLogin }) {
   const [pin, setPin] = useState('');
   const [mode, setMode] = useState('loading'); // loading, set, verify
@@ -15,6 +17,7 @@ export default function LoginScreen({ onLogin }) {
   const [attempts, setAttempts] = useState(0);
   const [showHintInput, setShowHintInput] = useState(false);
   const [tempHint, setTempHint] = useState('');
+  const { theme, isDark } = useTheme();
   const PIN_LENGTH = 4;
 
   React.useEffect(() => {
@@ -76,15 +79,15 @@ export default function LoginScreen({ onLogin }) {
   };
 
   if (mode === 'loading') {
-    return <View style={styles.container} />;
+    return <View style={[styles.container, { backgroundColor: theme.background }]} />;
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <GlyseLogo size={80} />
-          <Text style={styles.welcomeText}>
+          <Text style={[styles.welcomeText, { color: theme.textSecondary }]}>
             {mode === 'set' ? 'Ustaw swój kod PIN' : 'Bezpieczny Dostęp Kliniczny'}
           </Text>
         </View>
@@ -95,25 +98,26 @@ export default function LoginScreen({ onLogin }) {
               key={i} 
               style={[
                 styles.pinDot, 
-                pin.length > i && styles.pinDotFilled
+                { borderColor: theme.accent },
+                pin.length > i && { backgroundColor: '#34D399', borderColor: '#34D399' }
               ]} 
             />
           ))}
         </View>
 
         {showHintInput ? (
-          <View style={styles.hintContainer}>
-            <Text style={styles.hintTitle}>Dodaj podpowiedź do PINu</Text>
+          <View style={[styles.hintContainer, { backgroundColor: theme.card, borderColor: theme.border }]}>
+            <Text style={[styles.hintTitle, { color: theme.text }]}>Dodaj podpowiedź do PINu</Text>
             <TextInput
-              style={styles.hintInput}
+              style={[styles.hintInput, { backgroundColor: theme.background, color: theme.text }]}
               placeholder="np. rok urodzenia psa"
-              placeholderTextColor="#A0B3C6"
+              placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
               value={tempHint}
               onChangeText={setTempHint}
               autoFocus
             />
-            <TouchableOpacity style={styles.saveHintButton} onPress={handleSavePinWithHint}>
-              <Text style={styles.saveHintButtonText}>Zatwierdź i wejdź</Text>
+            <TouchableOpacity style={[styles.saveHintButton, { backgroundColor: '#34D399' }]} onPress={handleSavePinWithHint}>
+              <Text style={[styles.saveHintButtonText, { color: '#003355' }]}>Zatwierdź i wejdź</Text>
             </TouchableOpacity>
           </View>
         ) : (
@@ -121,14 +125,14 @@ export default function LoginScreen({ onLogin }) {
             {attempts >= 2 && (
               <View style={styles.forgotPinContainer}>
                 {!storedHint && attempts >= 3 ? (
-                   <Text style={styles.reminderText}>Brak podpowiedzi. Skonfiguruj ją w ustawieniach.</Text>
+                   <Text style={[styles.reminderText, { color: '#34D399' }]}>Brak podpowiedzi. Skonfiguruj ją w ustawieniach.</Text>
                 ) : (
                   <TouchableOpacity 
                     onPress={() => Alert.alert('Podpowiedź', storedHint || 'Brak ustawionej podpowiedzi.')}
-                    style={styles.forgotPinButton}
+                    style={[styles.forgotPinButton, { backgroundColor: 'rgba(52, 211, 153, 0.1)', borderColor: 'rgba(52, 211, 153, 0.2)' }]}
                   >
                     <Ionicons name="help-circle-outline" size={18} color="#34D399" />
-                    <Text style={styles.forgotPinText}>Zapomniałeś PINu?</Text>
+                    <Text style={[styles.forgotPinText, { color: '#34D399' }]}>Zapomniałeś PINu?</Text>
                   </TouchableOpacity>
                 )}
               </View>
@@ -138,13 +142,13 @@ export default function LoginScreen({ onLogin }) {
               {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((num) => (
                 <TouchableOpacity 
                   key={num} 
-                  style={styles.key} 
+                  style={[styles.key, { backgroundColor: theme.card }]} 
                   onPress={() => handlePress(num.toString())}
                 >
-                  <Text style={styles.keyText}>{num}</Text>
+                  <Text style={[styles.keyText, { color: theme.text }]}>{num}</Text>
                 </TouchableOpacity>
               ))}
-              <TouchableOpacity style={styles.key} onPress={() => {
+              <TouchableOpacity style={[styles.key, { backgroundColor: theme.card }]} onPress={() => {
                   if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
                   if (Platform.OS === 'web') {
                       window.alert('Biometria niedostępna w przeglądarce. Użyj kodu PIN.');
@@ -152,13 +156,13 @@ export default function LoginScreen({ onLogin }) {
                       Alert.alert('Biometria', 'Skonfiguruj FaceID/TouchID w ustawieniach systemu, aby korzystać z tej funkcji.');
                   }
               }}>
-                <Ionicons name="finger-print" size={32} color="#005A9C" />
+                <Ionicons name="finger-print" size={32} color={theme.accent} />
               </TouchableOpacity>
-              <TouchableOpacity style={styles.key} onPress={() => handlePress('0')}>
-                <Text style={styles.keyText}>0</Text>
+              <TouchableOpacity style={[styles.key, { backgroundColor: theme.card }]} onPress={() => handlePress('0')}>
+                <Text style={[styles.keyText, { color: theme.text }]}>0</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.key} onPress={handleDelete}>
-                <Ionicons name="backspace-outline" size={28} color="#A0B3C6" />
+              <TouchableOpacity style={[styles.key, { backgroundColor: theme.card }]} onPress={handleDelete}>
+                <Ionicons name="backspace-outline" size={28} color={isDark ? "#475569" : "#A0B3C6"} />
               </TouchableOpacity>
             </View>
 
@@ -178,7 +182,7 @@ export default function LoginScreen({ onLogin }) {
                 else Alert.alert('Zresetowano', 'Zrestartuj aplikację.');
               }}
             >
-              <Text style={{ color: 'rgba(255,255,255,0.3)', fontSize: 12 }}>Resetuj zabezpieczenia (Tryb Deweloperski)</Text>
+              <Text style={{ color: isDark ? 'rgba(255,255,255,0.1)' : 'rgba(0,0,0,0.1)', fontSize: 12 }}>Resetuj zabezpieczenia (Tryb Deweloperski)</Text>
             </TouchableOpacity>
           </>
         )}

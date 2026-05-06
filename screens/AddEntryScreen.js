@@ -3,6 +3,7 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingVi
 import * as Haptics from 'expo-haptics';
 import { addEntry } from '../utils/storage';
 import GlyseLogo from '../components/GlyseLogo';
+import { useTheme } from '../context/ThemeContext';
 
 const MEAL_TIMES = ['Na czczo', 'Przed posiłkiem', '2h po posiłku', 'Przed snem'];
 const ACTIVITY_LEVELS = ['Niska', 'Średnia', 'Wysoka'];
@@ -22,6 +23,7 @@ export default function AddEntryScreen({ navigation }) {
   const [mealContent, setMealContent] = useState('');
   const [activityLevel, setActivityLevel] = useState('Średnia');
   const [showContextualIQ, setShowContextualIQ] = useState(false);
+  const { theme, isDark } = useTheme();
 
   const handleMealTimeSelect = (time) => {
     setMealTime(time);
@@ -75,30 +77,32 @@ export default function AddEntryScreen({ navigation }) {
     <Wrapper {...wrapperProps}>
       <KeyboardAvoidingView 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={styles.container}
+        style={[styles.container, { backgroundColor: theme.background }]}
       >
         <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
           <View style={styles.header}>
             <GlyseLogo size={50} />
-            <Text style={styles.title}>Nowy Pomiar</Text>
-            <Text style={styles.subtitle}>Wprowadź swoje aktualne wyniki</Text>
+            <Text style={[styles.title, { color: theme.text }]}>Nowy Pomiar</Text>
+            <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Wprowadź swoje aktualne wyniki</Text>
           </View>
 
           <View style={styles.form}>
-            <Text style={styles.label}>Pora pomiaru</Text>
+            <Text style={[styles.label, { color: theme.text }]}>Pora pomiaru</Text>
             <View style={styles.mealTimeContainer}>
               {MEAL_TIMES.map((time) => (
                 <TouchableOpacity
                   key={time}
                   style={[
                     styles.mealTimeButton,
-                    mealTime === time && styles.mealTimeButtonActive
+                    { backgroundColor: theme.card, borderColor: theme.border },
+                    mealTime === time && { backgroundColor: theme.accent, borderColor: theme.accent }
                   ]}
                   onPress={() => handleMealTimeSelect(time)}
                 >
                   <Text style={[
                     styles.mealTimeText,
-                    mealTime === time && styles.mealTimeTextActive
+                    { color: theme.text },
+                    mealTime === time && { color: '#FFFFFF' }
                   ]}>
                     {time}
                   </Text>
@@ -106,66 +110,68 @@ export default function AddEntryScreen({ navigation }) {
               ))}
             </View>
 
-            <Text style={styles.label}>Wynik z glukometru (mg/dL)</Text>
-            <View style={styles.inputContainer}>
+            <Text style={[styles.label, { color: theme.text }]}>Wynik z glukometru (mg/dL)</Text>
+            <View style={[styles.inputContainer, { backgroundColor: theme.card, borderColor: theme.border }]}>
               <TextInput
-                style={styles.mainInput}
+                style={[styles.mainInput, { color: theme.accent }]}
                 value={sugar}
                 onChangeText={setSugar}
                 keyboardType="numeric"
                 placeholder="np. 105"
-                placeholderTextColor="#555"
+                placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
                 maxLength={5}
                 returnKeyType="next"
               />
-              <Text style={styles.unitText}>mg/dL</Text>
+              <Text style={[styles.unitText, { color: theme.textSecondary }]}>mg/dL</Text>
             </View>
 
             <TextInput
-              style={[styles.input, styles.textArea]}
+              style={[styles.input, styles.textArea, { backgroundColor: theme.card, borderColor: theme.border, color: theme.text }]}
               value={notes}
               onChangeText={setNotes}
               placeholder="np. bolała głowa, stres..."
-              placeholderTextColor="#555"
+              placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
               multiline
               numberOfLines={4}
             />
 
             <View style={styles.contextualIQHeader}>
-              <Text style={styles.label}>Contextual IQ (Opcjonalnie)</Text>
+              <Text style={[styles.label, { color: theme.text }]}>Contextual IQ (Opcjonalnie)</Text>
               <TouchableOpacity 
                 onPress={() => setShowContextualIQ(!showContextualIQ)}
-                style={styles.toggleButton}
+                style={[styles.toggleButton, { backgroundColor: theme.card, borderColor: theme.border }]}
               >
-                <Text style={styles.toggleButtonText}>{showContextualIQ ? 'Ukryj' : 'Rozwiń'}</Text>
+                <Text style={[styles.toggleButtonText, { color: theme.accent }]}>{showContextualIQ ? 'Ukryj' : 'Rozwiń'}</Text>
               </TouchableOpacity>
             </View>
 
             {showContextualIQ && (
-              <View style={styles.contextualIQContainer}>
-                <Text style={styles.smallLabel}>Co było w posiłku?</Text>
+              <View style={[styles.contextualIQContainer, { backgroundColor: isDark ? '#1E293B' : '#F9F9FB', borderColor: theme.border }]}>
+                <Text style={[styles.smallLabel, { color: theme.textSecondary }]}>Co było w posiłku?</Text>
                 <TextInput
-                  style={styles.input}
+                  style={[styles.input, { backgroundColor: theme.background, borderColor: theme.border, color: theme.text, marginBottom: 20 }]}
                   value={mealContent}
                   onChangeText={setMealContent}
                   placeholder="np. pizza, sałatka, owoce..."
-                  placeholderTextColor="#555"
+                  placeholderTextColor={isDark ? "#475569" : "#A0B3C6"}
                 />
 
-                <Text style={styles.smallLabel}>Poziom aktywności fizycznej</Text>
+                <Text style={[styles.smallLabel, { color: theme.textSecondary }]}>Poziom aktywności fizycznej</Text>
                 <View style={styles.activityContainer}>
                   {ACTIVITY_LEVELS.map((level) => (
                     <TouchableOpacity
                       key={level}
                       style={[
                         styles.activityButton,
-                        activityLevel === level && styles.activityButtonActive
+                        { backgroundColor: theme.background, borderColor: theme.border },
+                        activityLevel === level && { backgroundColor: theme.accent, borderColor: theme.accent }
                       ]}
                       onPress={() => setActivityLevel(level)}
                     >
                       <Text style={[
                         styles.activityText,
-                        activityLevel === level && styles.activityTextActive
+                        { color: theme.text },
+                        activityLevel === level && { color: '#FFFFFF' }
                       ]}>
                         {level}
                       </Text>
@@ -175,7 +181,7 @@ export default function AddEntryScreen({ navigation }) {
               </View>
             )}
 
-            <TouchableOpacity style={styles.button} onPress={handleSave}>
+            <TouchableOpacity style={[styles.button, { backgroundColor: theme.accent, shadowColor: theme.accent }]} onPress={handleSave}>
               <Text style={styles.buttonText}>Zapisz Wynik</Text>
             </TouchableOpacity>
           </View>

@@ -7,11 +7,12 @@ import * as Haptics from 'expo-haptics';
 import { Ionicons } from '@expo/vector-icons';
 import { Swipeable } from 'react-native-gesture-handler';
 import { getData, deleteEntry } from '../utils/storage';
-import GlyseLogo from '../components/GlyseLogo';
+import { useTheme } from '../context/ThemeContext';
 
 export default function HistoryScreen() {
   const [data, setData] = useState([]);
   const [refreshing, setRefreshing] = useState(false);
+  const { theme, isDark } = useTheme();
 
   const loadData = async () => {
     const stored = await getData();
@@ -108,32 +109,32 @@ export default function HistoryScreen() {
     const date = new Date(item.date);
     return (
       <Swipeable renderRightActions={() => renderRightActions(item.id)}>
-        <View style={styles.itemContainer}>
-          <View style={styles.itemDateContainer}>
-            <Text style={styles.itemDay}>{date.getDate().toString().padStart(2, '0')}.{(date.getMonth() + 1).toString().padStart(2, '0')}</Text>
-            <Text style={styles.itemTime}>{date.getHours().toString().padStart(2, '0')}:{date.getMinutes().toString().padStart(2, '0')}</Text>
+        <View style={[styles.itemContainer, { backgroundColor: theme.card, borderColor: theme.border }]}>
+          <View style={[styles.itemDateContainer, { borderRightColor: theme.border }]}>
+            <Text style={[styles.itemDay, { color: theme.text }]}>{date.getDate().toString().padStart(2, '0')}.{(date.getMonth() + 1).toString().padStart(2, '0')}</Text>
+            <Text style={[styles.itemTime, { color: theme.textSecondary }]}>{date.getHours().toString().padStart(2, '0')}:{date.getMinutes().toString().padStart(2, '0')}</Text>
           </View>
           <View style={styles.itemContent}>
-            <Text style={styles.itemSugar}>
-              {item.sugarLevel} <Text style={styles.itemUnit}>mg/dL</Text>
+            <Text style={[styles.itemSugar, { color: theme.accent }]}>
+              {item.sugarLevel} <Text style={[styles.itemUnit, { color: theme.textSecondary }]}>mg/dL</Text>
             </Text>
             <View style={styles.tagContainer}>
-              <View style={styles.mealTimeTag}>
-                  <Text style={styles.mealTimeTagText}>{item.mealTime || 'Na czczo'}</Text>
+              <View style={[styles.mealTimeTag, { backgroundColor: isDark ? '#334155' : '#F2F2F7' }]}>
+                  <Text style={[styles.mealTimeTagText, { color: theme.text }]}>{item.mealTime || 'Na czczo'}</Text>
               </View>
               {item.activityLevel && (
-                <View style={[styles.mealTimeTag, { marginLeft: 8, backgroundColor: '#E0F2FE' }]}>
-                  <Text style={[styles.mealTimeTagText, { color: '#0369A1' }]}>{item.activityLevel}</Text>
+                <View style={[styles.mealTimeTag, { marginLeft: 8, backgroundColor: isDark ? '#075985' : '#E0F2FE' }]}>
+                  <Text style={[styles.mealTimeTagText, { color: isDark ? '#BAE6FD' : '#0369A1' }]}>{item.activityLevel}</Text>
                 </View>
               )}
             </View>
             {item.mealContent ? (
-              <View style={styles.contextualInfo}>
-                <Ionicons name="restaurant-outline" size={14} color="#666" />
-                <Text style={styles.contextualText}>{item.mealContent}</Text>
+              <View style={[styles.contextualInfo, { backgroundColor: isDark ? '#0F172A' : '#F9F9FB' }]}>
+                <Ionicons name="restaurant-outline" size={14} color={theme.textSecondary} />
+                <Text style={[styles.contextualText, { color: theme.textSecondary }]}>{item.mealContent}</Text>
               </View>
             ) : null}
-            {item.notes ? <Text style={styles.itemNotes}>{item.notes}</Text> : null}
+            {item.notes ? <Text style={[styles.itemNotes, { color: theme.textSecondary }]}>{item.notes}</Text> : null}
           </View>
         </View>
       </Swipeable>
@@ -141,15 +142,15 @@ export default function HistoryScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
         <GlyseLogo size={50} />
-        <Text style={styles.title}>Historia</Text>
-        <Text style={styles.subtitle}>Pełna historia Twojego zdrowia</Text>
+        <Text style={[styles.title, { color: theme.text }]}>Historia</Text>
+        <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Pełna historia Twojego zdrowia</Text>
         
-        <TouchableOpacity style={styles.exportButton} onPress={handleExportCSV}>
-          <Ionicons name="download-outline" size={18} color="#005A9C" />
-          <Text style={styles.exportButtonText}>Eksportuj CSV</Text>
+        <TouchableOpacity style={[styles.exportButton, { backgroundColor: theme.card, borderColor: theme.border }]} onPress={handleExportCSV}>
+          <Ionicons name="download-outline" size={18} color={theme.accent} />
+          <Text style={[styles.exportButtonText, { color: theme.accent }]}>Eksportuj CSV</Text>
         </TouchableOpacity>
       </View>
 
@@ -158,12 +159,12 @@ export default function HistoryScreen() {
         keyExtractor={item => item.id}
         renderItem={renderItem}
         contentContainerStyle={styles.listContent}
-        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor="#fff" />}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} tintColor={theme.accent} />}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <Ionicons name="document-text-outline" size={64} color="#003355" style={{ marginBottom: 16 }} />
-            <Text style={styles.emptyTitle}>Brak wpisów</Text>
-            <Text style={styles.emptyText}>Twoja historia pomiarów jest jeszcze pusta. Dodaj pierwszy wynik na ekranie "Nowy pomiar".</Text>
+            <Ionicons name="document-text-outline" size={64} color={theme.accent} style={{ marginBottom: 16 }} />
+            <Text style={[styles.emptyTitle, { color: theme.text }]}>Brak wpisów</Text>
+            <Text style={[styles.emptyText, { color: theme.textSecondary }]}>Twoja historia pomiarów jest jeszcze pusta. Dodaj pierwszy wynik na ekranie "Nowy pomiar".</Text>
           </View>
         }
       />
