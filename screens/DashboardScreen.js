@@ -18,7 +18,7 @@ export default function DashboardScreen({ navigation }) {
   const [targets, setTargets] = useState({ min: 70, max: 180 });
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState('Wszystkie');
-  const { theme, toggleTheme, themeMode, isDark } = useTheme();
+  const { theme, isDark } = useTheme();
 
   const loadData = async () => {
     const stored = await getData();
@@ -78,11 +78,6 @@ export default function DashboardScreen({ navigation }) {
 
   const tirData = calculateTIRData();
 
-  const getThemeIcon = () => {
-    if (themeMode === 'light') return 'sunny';
-    if (themeMode === 'dark') return 'moon';
-    return 'time-outline';
-  };
 
   return (
     <View style={[styles.outerContainer, { backgroundColor: theme.background }]}>
@@ -93,12 +88,6 @@ export default function DashboardScreen({ navigation }) {
         <View style={styles.header}>
           <View style={styles.headerTop}>
             <GlyseLogo size={50} />
-            <TouchableOpacity style={[styles.themeToggle, { backgroundColor: isDark ? '#334155' : '#F2F2F7' }]} onPress={toggleTheme}>
-                <Ionicons name={getThemeIcon()} size={20} color={theme.accent} />
-                <Text style={[styles.themeToggleText, { color: theme.text }]}>
-                    {themeMode === 'auto' ? 'Auto' : themeMode === 'light' ? 'Jasny' : 'Ciemny'}
-                </Text>
-            </TouchableOpacity>
           </View>
           <Text style={[styles.title, { color: theme.text }]}>Panel Wyników</Text>
           <Text style={[styles.subtitle, { color: theme.textSecondary }]}>Twoje aktualne statystyki kliniczne</Text>
