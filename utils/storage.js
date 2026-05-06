@@ -69,7 +69,7 @@ export const getData = async () => {
   }
 };
 
-export const addEntry = async (sugarLevel, date, notes, mealTime = 'Na czczo') => {
+export const addEntry = async (sugarLevel, date, notes, mealTime = 'Na czczo', mealContent = '', activityLevel = 'Medium') => {
   try {
     const currentData = await getData();
     const newEntry = {
@@ -78,6 +78,8 @@ export const addEntry = async (sugarLevel, date, notes, mealTime = 'Na czczo') =
       date: date, // expecting ISO string or sortable format
       notes: notes || '',
       mealTime: mealTime,
+      mealContent: mealContent || '', // Added for Contextual IQ
+      activityLevel: activityLevel || 'Medium', // Added for Contextual IQ
     };
     
     const newData = [newEntry, ...currentData];

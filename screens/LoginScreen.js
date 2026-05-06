@@ -118,12 +118,19 @@ export default function LoginScreen({ onLogin }) {
           </View>
         ) : (
           <>
-            {attempts >= 3 && (
-              <View style={styles.reminderContainer}>
-                <Ionicons name="bulb-outline" size={16} color="#34D399" />
-                <Text style={styles.reminderText}>
-                  {storedHint ? `Podpowiedź: ${storedHint}` : 'Brak podpowiedzi. Skonfiguruj ją w ustawieniach.'}
-                </Text>
+            {attempts >= 2 && (
+              <View style={styles.forgotPinContainer}>
+                {!storedHint && attempts >= 3 ? (
+                   <Text style={styles.reminderText}>Brak podpowiedzi. Skonfiguruj ją w ustawieniach.</Text>
+                ) : (
+                  <TouchableOpacity 
+                    onPress={() => Alert.alert('Podpowiedź', storedHint || 'Brak ustawionej podpowiedzi.')}
+                    style={styles.forgotPinButton}
+                  >
+                    <Ionicons name="help-circle-outline" size={18} color="#34D399" />
+                    <Text style={styles.forgotPinText}>Zapomniałeś PINu?</Text>
+                  </TouchableOpacity>
+                )}
               </View>
             )}
 
@@ -302,5 +309,25 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 10,
+  },
+  forgotPinContainer: {
+    marginBottom: 24,
+    alignItems: 'center',
+  },
+  forgotPinButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'rgba(52, 211, 153, 0.1)',
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: 'rgba(52, 211, 153, 0.2)',
+  },
+  forgotPinText: {
+    color: '#34D399',
+    fontSize: 13,
+    fontWeight: '700',
+    marginLeft: 8,
   }
 });

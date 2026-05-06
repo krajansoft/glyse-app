@@ -5,6 +5,7 @@ import { addEntry } from '../utils/storage';
 import GlyseLogo from '../components/GlyseLogo';
 
 const MEAL_TIMES = ['Na czczo', 'Przed posiłkiem', '2h po posiłku', 'Przed snem'];
+const ACTIVITY_LEVELS = ['Niska', 'Średnia', 'Wysoka'];
 
 const getSuggestedMealTime = () => {
     const hour = new Date().getHours();
@@ -18,6 +19,9 @@ export default function AddEntryScreen({ navigation }) {
   const [sugar, setSugar] = useState('');
   const [notes, setNotes] = useState('');
   const [mealTime, setMealTime] = useState(getSuggestedMealTime());
+  const [mealContent, setMealContent] = useState('');
+  const [activityLevel, setActivityLevel] = useState('Średnia');
+  const [showContextualIQ, setShowContextualIQ] = useState(false);
 
   const handleMealTimeSelect = (time) => {
     setMealTime(time);
@@ -37,10 +41,12 @@ export default function AddEntryScreen({ navigation }) {
 
     try {
       const date = new Date().toISOString();
-      await addEntry(sugar, date, notes, mealTime);
+      await addEntry(sugar, date, notes, mealTime, mealContent, activityLevel);
       setSugar('');
       setNotes('');
-      setMealTime(MEAL_TIMES[0]);
+      setMealContent('');
+      setActivityLevel('Średnia');
+      setMealTime(getSuggestedMealTime());
       Keyboard.dismiss();
       
       if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -115,7 +121,6 @@ export default function AddEntryScreen({ navigation }) {
               <Text style={styles.unitText}>mg/dL</Text>
             </View>
 
-            <Text style={styles.label}>Notatki (opcjonalnie)</Text>
             <TextInput
               style={[styles.input, styles.textArea]}
               value={notes}
@@ -125,6 +130,50 @@ export default function AddEntryScreen({ navigation }) {
               multiline
               numberOfLines={4}
             />
+
+            <View style={styles.contextualIQHeader}>
+              <Text style={styles.label}>Contextual IQ (Opcjonalnie)</Text>
+              <TouchableOpacity 
+                onPress={() => setShowContextualIQ(!showContextualIQ)}
+                style={styles.toggleButton}
+              >
+                <Text style={styles.toggleButtonText}>{showContextualIQ ? 'Ukryj' : 'Rozwiń'}</Text>
+              </TouchableOpacity>
+            </View>
+
+            {showContextualIQ && (
+              <View style={styles.contextualIQContainer}>
+                <Text style={styles.smallLabel}>Co było w posiłku?</Text>
+                <TextInput
+                  style={styles.input}
+                  value={mealContent}
+                  onChangeText={setMealContent}
+                  placeholder="np. pizza, sałatka, owoce..."
+                  placeholderTextColor="#555"
+                />
+
+                <Text style={styles.smallLabel}>Poziom aktywności fizycznej</Text>
+                <View style={styles.activityContainer}>
+                  {ACTIVITY_LEVELS.map((level) => (
+                    <TouchableOpacity
+                      key={level}
+                      style={[
+                        styles.activityButton,
+                        activityLevel === level && styles.activityButtonActive
+                      ]}
+                      onPress={() => setActivityLevel(level)}
+                    >
+                      <Text style={[
+                        styles.activityText,
+                        activityLevel === level && styles.activityTextActive
+                      ]}>
+                        {level}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            )}
 
             <TouchableOpacity style={styles.button} onPress={handleSave}>
               <Text style={styles.buttonText}>Zapisz Wynik</Text>
@@ -257,5 +306,64 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: '700',
     letterSpacing: 1,
+  },
+  contextualIQHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  toggleButton: {
+    backgroundColor: '#F2F2F7',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 8,
+  },
+  toggleButtonText: {
+    color: '#005A9C',
+    fontSize: 12,
+    fontWeight: '700',
+  },
+  contextualIQContainer: {
+    backgroundColor: '#F9F9FB',
+    borderRadius: 20,
+    padding: 20,
+    marginBottom: 40,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  smallLabel: {
+    fontSize: 12,
+    color: '#666',
+    fontWeight: '700',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+  },
+  activityContainer: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 8,
+  },
+  activityButton: {
+    flex: 1,
+    backgroundColor: '#ffffff',
+    borderRadius: 10,
+    paddingVertical: 10,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  activityButtonActive: {
+    backgroundColor: '#005A9C',
+    borderColor: '#005A9C',
+  },
+  activityText: {
+    color: '#003355',
+    fontSize: 13,
+    fontWeight: '600',
+  },
+  activityTextActive: {
+    color: '#ffffff',
+    fontWeight: '700',
   }
 });

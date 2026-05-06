@@ -121,7 +121,18 @@ export default function HistoryScreen() {
               <View style={styles.mealTimeTag}>
                   <Text style={styles.mealTimeTagText}>{item.mealTime || 'Na czczo'}</Text>
               </View>
+              {item.activityLevel && (
+                <View style={[styles.mealTimeTag, { marginLeft: 8, backgroundColor: '#E0F2FE' }]}>
+                  <Text style={[styles.mealTimeTagText, { color: '#0369A1' }]}>{item.activityLevel}</Text>
+                </View>
+              )}
             </View>
+            {item.mealContent ? (
+              <View style={styles.contextualInfo}>
+                <Ionicons name="restaurant-outline" size={14} color="#666" />
+                <Text style={styles.contextualText}>{item.mealContent}</Text>
+              </View>
+            ) : null}
             {item.notes ? <Text style={styles.itemNotes}>{item.notes}</Text> : null}
           </View>
         </View>
@@ -288,6 +299,20 @@ const styles = StyleSheet.create({
     fontSize: 13,
     marginTop: 8,
     fontStyle: 'italic',
+  },
+  contextualInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginTop: 10,
+    backgroundColor: '#F9F9FB',
+    padding: 8,
+    borderRadius: 8,
+    gap: 6,
+  },
+  contextualText: {
+    fontSize: 12,
+    color: '#444',
+    fontWeight: '500',
   },
   emptyContainer: {
     alignItems: 'center',
