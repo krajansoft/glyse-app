@@ -194,7 +194,6 @@ export default function AddEntryScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFFFFF',
   },
   scrollContent: {
     flexGrow: 1,
@@ -208,13 +207,11 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: '700',
-    color: '#003355',
     marginTop: 15,
     opacity: 0.9,
   },
   subtitle: {
     fontSize: 13,
-    color: '#666',
     textAlign: 'center',
     marginTop: 4,
     opacity: 0.8,
@@ -224,7 +221,6 @@ const styles = StyleSheet.create({
   },
   label: {
     fontSize: 14,
-    color: '#003355',
     fontWeight: '600',
     marginBottom: 8,
     textTransform: 'uppercase',

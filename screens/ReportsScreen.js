@@ -197,7 +197,7 @@ export default function ReportsScreen() {
                     </View>
 
                     <ScrollView style={styles.previewScroll}>
-                        <View style={styles.previewPaper}>
+                        <View style={[styles.previewPaper, { backgroundColor: '#FFFFFF' }]}>
                             <View style={styles.previewInnerHeader}>
                                 <GlyseLogo size={30} />
                                 <View style={{alignItems: 'flex-end'}}>
@@ -262,10 +262,10 @@ export default function ReportsScreen() {
 }
 
 const styles = StyleSheet.create({
-    container: { flex: 1, backgroundColor: '#FFFFFF' },
+    container: { flex: 1 },
     scrollContent: { padding: 24, paddingTop: 60 },
     header: { alignItems: 'center', marginBottom: 40 },
-    title: { fontSize: 26, fontWeight: '700', color: '#003355', marginTop: 15, opacity: 0.9 },
+    title: { fontSize: 26, fontWeight: '700', marginTop: 15, opacity: 0.9 },
     subtitle: { fontSize: 13, color: '#666', textAlign: 'center', marginTop: 4, opacity: 0.8 },
     section: { marginBottom: 30 },
     sectionTitle: { fontSize: 13, fontWeight: '700', color: '#003355', marginBottom: 15, textTransform: 'uppercase', letterSpacing: 1.5, opacity: 0.85 },

@@ -274,7 +274,6 @@ export default function SettingsScreen({ onLogout }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F8F9FA',
   },
   header: {
     paddingTop: 60,
@@ -285,7 +284,6 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 26,
     fontWeight: '700',
-    color: '#003355',
     marginTop: 15,
   },
   subtitle: {
@@ -294,13 +292,11 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   section: {
-    backgroundColor: '#FFFFFF',
     marginHorizontal: 24,
     marginBottom: 24,
     padding: 20,
     borderRadius: 24,
     borderWidth: 1,
-    borderColor: '#F2F2F7',
   },
   sectionTitle: {
     fontSize: 18,

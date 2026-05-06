@@ -17,7 +17,7 @@ export default function LoginScreen({ onLogin }) {
   const [attempts, setAttempts] = useState(0);
   const [showHintInput, setShowHintInput] = useState(false);
   const [tempHint, setTempHint] = useState('');
-  const { theme, isDark } = useTheme();
+  const { theme, toggleTheme, themeMode, isDark } = useTheme();
   const PIN_LENGTH = 4;
 
   React.useEffect(() => {
@@ -78,12 +78,29 @@ export default function LoginScreen({ onLogin }) {
     if (Platform.OS !== 'web') Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
   };
 
+  const getThemeIcon = () => {
+    if (themeMode === 'light') return 'sunny';
+    if (themeMode === 'dark') return 'moon';
+    return 'time-outline';
+  };
+
   if (mode === 'loading') {
     return <View style={[styles.container, { backgroundColor: theme.background }]} />;
   }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <View style={styles.themeToggleContainer}>
+        <TouchableOpacity 
+          style={[styles.themeToggle, { backgroundColor: isDark ? '#334155' : '#F2F2F7' }]} 
+          onPress={toggleTheme}
+        >
+          <Ionicons name={getThemeIcon()} size={18} color={theme.accent} />
+          <Text style={[styles.themeToggleText, { color: theme.text }]}>
+            {themeMode === 'auto' ? 'Auto' : themeMode === 'light' ? 'Jasny' : 'Ciemny'}
+          </Text>
+        </TouchableOpacity>
+      </View>
       <View style={styles.content}>
         <View style={styles.logoContainer}>
           <GlyseLogo size={80} />
@@ -207,6 +224,27 @@ const styles = StyleSheet.create({
   logoContainer: {
     alignItems: 'center',
     marginBottom: 60,
+  },
+  themeToggleContainer: {
+    position: 'absolute',
+    top: 50,
+    right: 20,
+    zIndex: 10,
+  },
+  themeToggle: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
+  },
+  themeToggleText: {
+    fontSize: 11,
+    fontWeight: '700',
+    marginLeft: 6,
+    textTransform: 'uppercase',
   },
   welcomeText: {
     color: '#A0B3C6',
