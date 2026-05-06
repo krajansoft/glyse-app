@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <style>
+      @page { size: A4; margin: 15mm; }
+      body { 
+        font-family: 'Helvetica', 'Arial', sans-serif; 
+        color: #1a1a1a; 
+        line-height: 1.5;
+        margin: 0;
+        padding: 40px;
+        background: #f0f0f0;
+      }
+      
+      .paper {
+          background: white;
+          width: 210mm;
+          min-height: 297mm;
+          margin: 0 auto;
+          padding: 20mm;
+          box-shadow: 0 0 20px rgba(0,0,0,0.2);
+      }
+
+      /* Header Section */
+      .header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: flex-start; 
+        border-bottom: 3px solid #003355; 
+        padding-bottom: 20px; 
+        margin-bottom: 30px; 
+      }
+      .brand-box { display: flex; align-items: center; }
+      .logo { width: 50px; height: 50px; border-radius: 8px; background: #003355; display: flex; align-items: center; justify-content: center; color: white; font-weight: bold; }
+      .app-name { font-size: 28px; font-weight: 900; color: #003355; margin-left: 12px; letter-spacing: -1px; }
+      
+      .report-meta { text-align: right; }
+      .report-title { font-size: 18px; font-weight: 800; color: #003355; margin-bottom: 4px; }
+      .report-date { font-size: 12px; color: #666; }
+
+      /* Patient Identity */
+      .patient-card { 
+        background-color: #f4f7f9; 
+        border-radius: 12px; 
+        padding: 20px; 
+        margin-bottom: 35px;
+        border-left: 5px solid #005A9C;
+      }
+      .patient-label { font-size: 11px; color: #005A9C; font-weight: 800; text-transform: uppercase; margin-bottom: 5px; }
+      .patient-name { font-size: 22px; font-weight: 700; color: #003355; }
+      .patient-details { font-size: 13px; color: #444; margin-top: 5px; }
+
+      /* Clinical Dashboard */
+      .section-title { 
+        font-size: 14px; 
+        font-weight: 800; 
+        color: #003355; 
+        text-transform: uppercase; 
+        border-bottom: 1px solid #eee; 
+        padding-bottom: 8px; 
+        margin-bottom: 15px; 
+        display: flex;
+        align-items: center;
+      }
+      
+      .dashboard { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; margin-bottom: 40px; }
+      .stat-card { 
+        background: white; 
+        border: 1px solid #e1e8ed; 
+        border-radius: 10px; 
+        padding: 15px; 
+        text-align: center; 
+      }
+      .stat-val { font-size: 24px; font-weight: 800; color: #005A9C; }
+      .stat-unit { font-size: 11px; color: #666; font-weight: 600; margin-top: 2px; }
+      .stat-desc { font-size: 10px; color: #888; text-transform: uppercase; margin-top: 8px; font-weight: 700; }
+
+      /* Measurements Table */
+      table { width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 10px; }
+      th { 
+        background-color: #f8fafc; 
+        color: #003355; 
+        font-size: 11px; 
+        font-weight: 800; 
+        text-transform: uppercase; 
+        padding: 12px 15px; 
+        border-bottom: 2px solid #e1e8ed;
+        text-align: left;
+      }
+      td { 
+        padding: 12px 15px; 
+        font-size: 13px; 
+        border-bottom: 1px solid #f1f5f9; 
+        vertical-align: middle;
+      }
+      
+      /* Clinical Flags */
+      .flag { padding: 4px 8px; border-radius: 6px; font-weight: 800; font-size: 11px; }
+      .flag-hypo { background-color: #fee2e2; color: #dc2626; } /* Red */
+      .flag-hyper { background-color: #ffedd5; color: #ea580c; } /* Orange */
+      .flag-normal { background-color: #f0fdf4; color: #16a34a; } /* Green */
+
+      .sugar-val { font-size: 16px; font-weight: 800; }
+      .notes-cell { color: #666; font-style: italic; font-size: 12px; max-width: 200px; }
+
+      /* Footer and Signature */
+      .clinical-footer { margin-top: 60px; display: flex; justify-content: space-between; }
+      .signature-box { width: 200px; border-top: 1px solid #333; text-align: center; padding-top: 8px; font-size: 11px; color: #444; }
+      .legal-disclaimer { 
+        margin-top: 40px; 
+        font-size: 9px; 
+        color: #999; 
+        text-align: center; 
+        background: #fafafa; 
+        padding: 15px; 
+        border-radius: 8px; 
+      }
+    </style>
+  </head>
+  <body>
+    <div class="paper">
+        <div class="header">
+          <div class="brand-box">
+            <div class="logo">G</div>
+            <span class="app-name">GLYSE</span>
+          </div>
+          <div class="report-meta">
+            <div class="report-title">RAPORT GLIKEMII</div>
+            <div class="report-date">Wygenerowano: 5 maja 2026, 23:45</div>
+          </div>
+        </div>
+
+        <div class="patient-card">
+          <div class="patient-label">Identyfikacja Pacjenta</div>
+          <div class="patient-name">Jan Kowalski</div>
+          <div class="patient-details">Rok urodzenia: 1985</div>
+        </div>
+
+        <div class="section-title">Podsumowanie Parametrów Klinicznych</div>
+        <div class="dashboard">
+          <div class="stat-card">
+            <div class="stat-val">6.2</div>
+            <div class="stat-unit">%</div>
+            <div class="stat-desc">Szac. HbA1c</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">85</div>
+            <div class="stat-unit">%</div>
+            <div class="stat-desc">Time in Range</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">5</div>
+            <div class="stat-unit">%</div>
+            <div class="stat-desc">Hipoglikemia</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-val">10</div>
+            <div class="stat-unit">%</div>
+            <div class="stat-desc">Hiperglikemia</div>
+          </div>
+        </div>
+
+        <div class="section-title">Dzienniczek Samokontroli</div>
+        <table>
+          <thead>
+            <tr>
+              <th>Data i Godzina</th>
+              <th>Okoliczności</th>
+              <th>Wynik (mg/dL)</th>
+              <th>Status</th>
+              <th>Notatki</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>
+                <div style="font-weight: 700;">05.05.2026</div>
+                <div style="font-size: 11px; color: #666;">godz. 08:00</div>
+              </td>
+              <td>Na czczo</td>
+              <td class="sugar-val">95</td>
+              <td><span class="flag flag-normal">W NORMIE</span></td>
+              <td class="notes-cell">-</td>
+            </tr>
+            <tr>
+              <td>
+                <div style="font-weight: 700;">05.05.2026</div>
+                <div style="font-size: 11px; color: #666;">godz. 14:30</div>
+              </td>
+              <td>2h po posiłku</td>
+              <td class="sugar-val">195</td>
+              <td><span class="flag flag-hyper">HIPERGLIKEMIA</span></td>
+              <td class="notes-cell">Zjadłem kawałek sernika.</td>
+            </tr>
+            <tr>
+              <td>
+                <div style="font-weight: 700;">04.05.2026</div>
+                <div style="font-size: 11px; color: #666;">godz. 22:00</div>
+              </td>
+              <td>Przed snem</td>
+              <td class="sugar-val">62</td>
+              <td><span class="flag flag-hypo">NIEDOCUKRZENIE</span></td>
+              <td class="notes-cell">Czułem drżenie rąk.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="clinical-footer">
+          <div style="font-size: 11px; color: #666; max-width: 300px;">
+            <strong>Uwagi pacjenta:</strong><br>
+            Raport obejmuje 3 pomiarów. Średnia glikemia: 117 mg/dL.
+          </div>
+          <div class="signature-box">
+            Pieczątka i podpis lekarza
+          </div>
+        </div>
+
+        <div class="legal-disclaimer">
+          Niniejszy dokument jest raportem z systemu samokontroli GLYSE. Dane mają charakter wspomagający proces diagnostyczny. 
+          Wszelkie zmiany w dawkowaniu leków muszą być konsultowane z lekarzem prowadzącym.
+        </div>
+    </div>
+  </body>
+</html>

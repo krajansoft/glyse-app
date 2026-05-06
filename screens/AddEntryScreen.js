@@ -1,0 +1,261 @@
+import React, { useState } from 'react';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import * as Haptics from 'expo-haptics';
+import { addEntry } from '../utils/storage';
+import GlyseLogo from '../components/GlyseLogo';
+
+const MEAL_TIMES = ['Na czczo', 'Przed posiłkiem', '2h po posiłku', 'Przed snem'];
+
+const getSuggestedMealTime = () => {
+    const hour = new Date().getHours();
+    if (hour >= 5 && hour < 10) return 'Na czczo';
+    if ((hour >= 12 && hour < 15) || (hour >= 18 && hour < 21)) return '2h po posiłku';
+    if (hour >= 21 || hour < 4) return 'Przed snem';
+    return 'Przed posiłkiem';
+};
+
+export default function AddEntryScreen({ navigation }) {
+  const [sugar, setSugar] = useState('');
+  const [notes, setNotes] = useState('');
+  const [mealTime, setMealTime] = useState(getSuggestedMealTime());
+
+  const handleMealTimeSelect = (time) => {
+    setMealTime(time);
+    if (Platform.OS !== 'web') Haptics.selectionAsync();
+  };
+
+  const handleSave = async () => {
+    if (!sugar || isNaN(sugar.replace(',', '.'))) {
+      if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      if (Platform.OS === 'web') {
+        window.alert('Podaj prawidłowy wynik pomiaru (np. 105)');
+      } else {
+        alert('Podaj prawidłowy wynik pomiaru (np. 105)');
+      }
+      return;
+    }
+
+    try {
+      const date = new Date().toISOString();
+      await addEntry(sugar, date, notes, mealTime);
+      setSugar('');
+      setNotes('');
+      setMealTime(MEAL_TIMES[0]);
+      Keyboard.dismiss();
+      
+      if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      
+      if (Platform.OS === 'web') {
+        window.alert('Pomiar został pomyślnie zapisany!');
+      } else {
+        alert('Pomiar został pomyślnie zapisany!');
+      }
+    } catch (e) {
+      if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);
+      if (Platform.OS === 'web') {
+        window.alert('Nie udało się zapisać pomiaru.');
+      } else {
+        alert('Nie udało się zapisać pomiaru.');
+      }
+    }
+  };
+
+  const Wrapper = Platform.OS === 'web' ? View : TouchableWithoutFeedback;
+  const wrapperProps = Platform.OS === 'web' 
+    ? { style: { flex: 1 }, testID: 'web-wrapper' } 
+    : { onPress: Keyboard.dismiss, accessible: false, testID: 'mobile-wrapper' };
+
+  return (
+    <Wrapper {...wrapperProps}>
+      <KeyboardAvoidingView 
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={styles.container}
+      >
+        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
+          <View style={styles.header}>
+            <GlyseLogo size={50} />
+            <Text style={styles.title}>Nowy Pomiar</Text>
+            <Text style={styles.subtitle}>Wprowadź swoje aktualne wyniki</Text>
+          </View>
+
+          <View style={styles.form}>
+            <Text style={styles.label}>Pora pomiaru</Text>
+            <View style={styles.mealTimeContainer}>
+              {MEAL_TIMES.map((time) => (
+                <TouchableOpacity
+                  key={time}
+                  style={[
+                    styles.mealTimeButton,
+                    mealTime === time && styles.mealTimeButtonActive
+                  ]}
+                  onPress={() => handleMealTimeSelect(time)}
+                >
+                  <Text style={[
+                    styles.mealTimeText,
+                    mealTime === time && styles.mealTimeTextActive
+                  ]}>
+                    {time}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <Text style={styles.label}>Wynik z glukometru (mg/dL)</Text>
+            <View style={styles.inputContainer}>
+              <TextInput
+                style={styles.mainInput}
+                value={sugar}
+                onChangeText={setSugar}
+                keyboardType="numeric"
+                placeholder="np. 105"
+                placeholderTextColor="#555"
+                maxLength={5}
+                returnKeyType="next"
+              />
+              <Text style={styles.unitText}>mg/dL</Text>
+            </View>
+
+            <Text style={styles.label}>Notatki (opcjonalnie)</Text>
+            <TextInput
+              style={[styles.input, styles.textArea]}
+              value={notes}
+              onChangeText={setNotes}
+              placeholder="np. bolała głowa, stres..."
+              placeholderTextColor="#555"
+              multiline
+              numberOfLines={4}
+            />
+
+            <TouchableOpacity style={styles.button} onPress={handleSave}>
+              <Text style={styles.buttonText}>Zapisz Wynik</Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </Wrapper>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#FFFFFF',
+  },
+  scrollContent: {
+    flexGrow: 1,
+    padding: 24,
+    paddingTop: 60,
+  },
+  header: {
+    paddingBottom: 40,
+    alignItems: 'center',
+  },
+  title: {
+    fontSize: 26,
+    fontWeight: '700',
+    color: '#003355',
+    marginTop: 15,
+    opacity: 0.9,
+  },
+  subtitle: {
+    fontSize: 13,
+    color: '#666',
+    textAlign: 'center',
+    marginTop: 4,
+    opacity: 0.8,
+  },
+  form: {
+    flex: 1,
+  },
+  label: {
+    fontSize: 14,
+    color: '#003355',
+    fontWeight: '600',
+    marginBottom: 8,
+    textTransform: 'uppercase',
+    letterSpacing: 1,
+  },
+  mealTimeContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    marginBottom: 30,
+    gap: 10,
+  },
+  mealTimeButton: {
+    backgroundColor: '#F2F2F7',
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+  },
+  mealTimeButtonActive: {
+    backgroundColor: '#005A9C',
+    borderColor: '#005A9C',
+  },
+  mealTimeText: {
+    color: '#003355',
+    fontWeight: '600',
+  },
+  mealTimeTextActive: {
+    color: '#ffffff',
+    fontWeight: '700',
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#F2F2F7',
+    borderRadius: 20,
+    marginBottom: 32,
+    paddingHorizontal: 24,
+    height: 100,
+    borderWidth: 2,
+    borderColor: '#E5E5EA',
+  },
+  mainInput: {
+    flex: 1,
+    fontSize: 48,
+    fontWeight: '800',
+    color: '#005A9C',
+    height: '100%',
+  },
+  unitText: {
+    fontSize: 20,
+    color: '#666666',
+    fontWeight: '600',
+    marginLeft: 10,
+  },
+  input: {
+    backgroundColor: '#F2F2F7',
+    borderRadius: 16,
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+    fontSize: 16,
+    color: '#003355',
+    borderWidth: 1,
+    borderColor: '#E5E5EA',
+    marginBottom: 40,
+  },
+  textArea: {
+    height: 120,
+    textAlignVertical: 'top',
+  },
+  button: {
+    backgroundColor: '#005A9C',
+    borderRadius: 20,
+    height: 60,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#005A9C',
+    shadowOffset: { width: 0, height: 8 },
+    shadowOpacity: 0.3,
+    shadowRadius: 12,
+    elevation: 8,
+  },
+  buttonText: {
+    color: '#ffffff',
+    fontSize: 18,
+    fontWeight: '700',
+    letterSpacing: 1,
+  }
+});
