@@ -1,8 +1,10 @@
 import React from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { SafeAreaProvider, useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StatusBar, View } from 'react-native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Ionicons } from '@expo/vector-icons';
 
 import { ThemeProvider, useTheme } from './context/ThemeContext';
@@ -17,7 +19,15 @@ const Tab = createBottomTabNavigator();
 
 function AppContent() {
   const [isAuthenticated, setIsAuthenticated] = React.useState(false);
+  const [isReady, setIsReady] = React.useState(false);
   const { theme, isDark } = useTheme();
+  const insets = useSafeAreaInsets();
+
+  React.useEffect(() => {
+    setIsReady(true);
+  }, []);
+
+  if (!isReady) return null;
 
   if (!isAuthenticated) {
     return (
@@ -38,8 +48,8 @@ function AppContent() {
                 tabBarStyle: {
                 backgroundColor: theme.tabBar,
                 borderTopColor: isDark ? '#1E293B' : '#002244',
-                height: 70,
-                paddingBottom: 10,
+                height: 70 + insets.bottom,
+                paddingBottom: insets.bottom > 0 ? insets.bottom : 10,
                 paddingTop: 10,
                 },
                 tabBarActiveTintColor: '#34D399',
@@ -102,10 +112,12 @@ function AppContent() {
 
 export default function App() {
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <AppContent />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <AppContent />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 }

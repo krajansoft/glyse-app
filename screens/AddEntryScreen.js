@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Keyboard, TouchableWithoutFeedback, Dimensions } from 'react-native';
 import * as Haptics from 'expo-haptics';
 import { addEntry } from '../utils/storage';
 import GlyseLogo from '../components/GlyseLogo';
@@ -7,6 +7,7 @@ import { useTheme } from '../context/ThemeContext';
 
 const MEAL_TIMES = ['Na czczo', 'Przed posiłkiem', '2h po posiłku', 'Przed snem'];
 const ACTIVITY_LEVELS = ['Niska', 'Średnia', 'Wysoka'];
+const screenWidth = Dimensions.get('window').width;
 
 const getSuggestedMealTime = () => {
     const hour = new Date().getHours();
@@ -233,8 +234,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   mealTimeButton: {
-    flex: screenWidth < 380 ? 1 : 0, // Stretch on small screens
-    minWidth: '45%',
+    flex: screenWidth < 380 ? 1 : 0, 
+    minWidth: screenWidth < 380 ? '45%' : 'auto',
     borderRadius: 12,
     paddingVertical: 12,
     paddingHorizontal: 12,

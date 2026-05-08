@@ -7,7 +7,11 @@ const TARGETS_KEY = '@app_targets';
 
 export const savePinHint = async (hint) => {
     try {
-        await AsyncStorage.setItem(HINT_KEY, hint);
+        if (hint === null) {
+            await AsyncStorage.removeItem(HINT_KEY);
+        } else {
+            await AsyncStorage.setItem(HINT_KEY, hint);
+        }
     } catch (e) {
         console.error('Error saving pin hint', e);
     }
@@ -42,7 +46,11 @@ export const getTargets = async () => {
 
 export const savePin = async (pin) => {
     try {
-        await AsyncStorage.setItem(PIN_KEY, pin);
+        if (pin === null) {
+            await AsyncStorage.removeItem(PIN_KEY);
+        } else {
+            await AsyncStorage.setItem(PIN_KEY, pin);
+        }
     } catch (e) {
         console.error('Error saving pin', e);
     }

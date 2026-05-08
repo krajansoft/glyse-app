@@ -18,7 +18,7 @@ export default function DashboardScreen({ navigation }) {
   const [targets, setTargets] = useState({ min: 70, max: 180 });
   const [refreshing, setRefreshing] = useState(false);
   const [activeFilter, setActiveFilter] = useState('Wszystkie');
-  const [containerWidth, setContainerWidth] = useState(screenWidth - 48); // Default fallback
+  const [chartWidth, setChartWidth] = useState(screenWidth - 88); 
   const { theme, isDark } = useTheme();
 
   const loadData = async () => {
@@ -65,11 +65,11 @@ export default function DashboardScreen({ navigation }) {
     };
   };
 
-  const medicalStats = calculateMedicalStats(data, targets);
+  const medicalStats = calculateMedicalStats(filteredData, targets);
   const chartData = getChartData();
 
   const calculateTIRData = () => {
-    if (data.length === 0) return [];
+    if (filteredData.length === 0) return [];
     return [
       { name: 'W normie', population: medicalStats.tir, color: '#34D399', legendFontColor: theme.textSecondary, legendFontSize: 12 },
       { name: 'Wysokie', population: medicalStats.tar, color: '#FFB347', legendFontColor: theme.textSecondary, legendFontSize: 12 },
@@ -124,30 +124,32 @@ export default function DashboardScreen({ navigation }) {
             </View>
         </View>
 
-        <View 
-          style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}
-          onLayout={(event) => setContainerWidth(event.nativeEvent.layout.width - 40)}
-        >
-          <Text style={[styles.cardTitle, { color: theme.text }]}>Analiza Time in Range (TIR)</Text>
-          <PieChart
-            data={tirData}
-            width={containerWidth}
-            height={180}
-            chartConfig={{ color: (opacity = 1) => theme.text }}
-            accessor={"population"}
-            backgroundColor={"transparent"}
-            paddingLeft={"15"}
-            center={[10, 0]}
-            absolute
-          />
-        </View>
+        {data.length > 0 && (
+          <View 
+            style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}
+            onLayout={(e) => setChartWidth(e.nativeEvent.layout.width - 40)}
+          >
+            <Text style={[styles.cardTitle, { color: theme.text }]}>Analiza Time in Range (TIR)</Text>
+            <PieChart
+              data={tirData}
+              width={chartWidth}
+              height={180}
+              chartConfig={{ color: (opacity = 1) => theme.text }}
+              accessor={"population"}
+              backgroundColor={"transparent"}
+              paddingLeft={"15"}
+              center={[10, 0]}
+              absolute
+            />
+          </View>
+        )}
 
         <View style={[styles.card, { backgroundColor: theme.card, borderColor: theme.border }]}>
           <Text style={[styles.cardTitle, { color: theme.text }]}>Trend Glikemii</Text>
           {chartData ? (
             <LineChart
               data={chartData}
-              width={containerWidth}
+              width={chartWidth}
               height={220}
               chartConfig={{
                 backgroundColor: theme.card,
@@ -266,7 +268,7 @@ const styles = StyleSheet.create({
     letterSpacing: 1,
   },
   statValueMain: {
-    fontSize: screenWidth < 380 ? 36 : 48, // Scale font for small phones
+    fontSize: screenWidth < 380 ? 36 : 48,
     fontWeight: '800',
     marginVertical: 8,
   },

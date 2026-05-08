@@ -1,5 +1,15 @@
 # Changelog - GLYSE App
 
+## [0.5.0] - 2026-05-08
+### Added
+- **EAS Build Configuration**: Added `eas.json` for professional Android APK builds.
+- **Native Sharing**: Integrated `expo-sharing` for direct PDF distribution on Android/iOS.
+- **Safe Area Integration**: Proper handling of system navigation bars and status bars across all devices.
+
+### Fixed
+- **Android Stability**: Resolved issues with data persistence between sessions on physical devices.
+- **PDF Layout**: Fixed layout issues when generating reports with large datasets.
+
 ## [0.4.0] - 2026-05-06
 ### Added
 - **Dynamic Theme Engine**: Global theme system with support for Light, Dark, and Auto modes.
