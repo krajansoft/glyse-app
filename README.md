@@ -1,50 +1,38 @@
-# Welcome to your Expo app 👋
+# GLYSE - Premium Blood Sugar Tracker
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+GLYSE to nowoczesna, profesjonalna aplikacja do monitorowania glikemii, zaprojektowana z myślą o użytkownikach ceniących estetykę, bezpieczeństwo i precyzję medyczną.
 
-## Get started
+## 🚀 Główne Funkcje
+- **Clinical Dashboard**: Wizualizacja TIR (Time in Range) i szacowane HbA1c.
+- **Contextual IQ**: Logowanie posiłków i aktywności fizycznej w kontekście pomiarów.
+- **Raporty PDF**: Profesjonalna dokumentacja medyczna gotowa do udostępnienia lekarzowi.
+- **Security First**: Zabezpieczenie kodem PIN i pełna prywatność danych (local-only storage).
+- **Dynamic Theme Engine**: Automatyczny tryb nocny i motywy premium.
 
-1. Install dependencies
+## 📁 Dokumentacja
+- [Dokumentacja Funkcjonalna](file:///c:/Users/adamk/.gemini/antigravity/scratch/blood-sugar-app/FUNCTIONAL_DOCUMENTATION.md) - Pełny opis funkcji i logiki aplikacji.
+- [Specyfikacja Assetów](file:///c:/Users/adamk/.gemini/antigravity/scratch/blood-sugar-app/GLYSE.md) - Wytyczne dotyczące brandingu i ikon Android.
+- [Changelog](file:///c:/Users/adamk/.gemini/antigravity/scratch/blood-sugar-app/CHANGELOG.md) - Historia zmian i wersji.
 
+## 🛠️ Rozwój (Development)
+
+1. **Instalacja zależności**:
    ```bash
    npm install
    ```
 
-2. Start the app
-
+2. **Uruchomienie lokalne**:
    ```bash
    npx expo start
    ```
 
-In the output, you'll find options to open the app in a
+3. **Build APK (Android)**:
+   ```bash
+   eas build -p android --profile preview
+   ```
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+## 🏗️ Technologia
+Aplikacja zbudowana w oparciu o **React Native** oraz **Expo SDK**. Wykorzystuje lokalną bazę danych `AsyncStorage` dla maksymalnej prywatności użytkownika.
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
-
-```bash
-npm run reset-project
-```
-
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
-
-## Learn more
-
-To learn more about developing your project with Expo, look at the following resources:
-
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
-
-## Join the community
-
-Join our community of developers creating universal apps.
-
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+---
+© 2026 Krajansoft / GLYSE Team
